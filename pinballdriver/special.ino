@@ -1,0 +1,190 @@
+/********************************************************************************/
+/*										*/
+/*	special.ino -- manage direct solenoids and flippers			*/
+/*										*/
+/********************************************************************************/
+
+
+
+
+/********************************************************************************/
+/*										*/
+/*	 Private storage							*/
+/*										*/
+/********************************************************************************/
+
+static unsigned long	next_special_check;
+static unsigned long	next_special_off;
+static unsigned long	next_special_on;
+
+static int		cur_special;		// what we are looking at
+static int		special_switch; 	// which switch is on
+static bool		special_disable;	// disable flag
+
+
+
+
+
+/********************************************************************************/
+/*										*/
+/*	Special access methods							*/
+/*										*/
+/********************************************************************************/
+
+void specialDisable()
+{
+   special_disable = true;
+   digitalWrite(SPECIAL_PIN_FLIPPER_ENABLE,LOW);
+   removeSpecialSolenoid();
+}
+
+
+void specialEnable()
+{
+   special_disable = false;
+   digitalWrite(SPECIAL_PIN_FLIPPER_ENABLE,HIGH);
+}
+
+
+
+/********************************************************************************/
+/*										*/
+/*	Special setup methods							*/
+/*										*/
+/********************************************************************************/
+
+void specialSetup()
+{
+   pinMode(SPECIAL_PIN_OUT_SELECT0,OUTPUT);
+   pinMode(SPECIAL_PIN_OUT_SELECT1,OUTPUT);
+   pinMode(SPECIAL_PIN_OUT_SELECT2,OUTPUT);
+   pinMode(SPECIAL_PIN_IN_0,INPUT_PULLUP);
+   pinMode(SPECIAL_PIN_IN_1,INPUT_PULLUP);
+   pinMode(SPECIAL_PIN_IN_2,INPUT_PULLUP);
+   pinMode(SPECIAL_PIN_IN_3,INPUT_PULLUP);
+   pinMode(SPECIAL_PIN_IN_4,INPUT_PULLUP);
+   pinMode(SPECIAL_PIN_IN_5,INPUT_PULLUP);
+   pinMode(SPECIAL_PIN_DRIVER,OUTPUT);
+   pinMode(SPECIAL_PIN_FLIPPER_ENABLE,OUTPUT);
+   pinMode(SPECIAL_PIN_LEFT_FLIPPER,OUTPUT);
+   pinMode(SPECIAL_PIN_RIGHT_FLIPPER,OUTPUT);
+
+   next_special_check = 0;
+   next_special_off = 0;
+   next_special_on = 0;
+   special_disable = false;
+   cur_special = 0;
+   special_switch = NO_SPECIAL;
+
+   digitalWrite(SPECIAL_PIN_OUT_SELECT0,LOW);
+   digitalWrite(SPECIAL_PIN_OUT_SELECT1,LOW);
+   digitalWrite(SPECIAL_PIN_OUT_SELECT2,LOW);
+   digitalWrite(SPECIAL_PIN_DRIVER,LOW);
+   digitalWrite(SPECIAL_PIN_FLIPPER_ENABLE,LOW);
+   digitalWrite(SPECIAL_PIN_LEFT_FLIPPER,LOW);
+   digitalWrite(SPECIAL_PIN_RIGHT_FLIPPER,LOW);
+
+   specialEnable();
+}
+
+
+
+
+/********************************************************************************/
+/*										*/
+/*	Special time wrap methods						*/
+/*										*/
+/********************************************************************************/
+
+void specialWrap()
+{
+   next_special_check = 0;
+   next_special_off = 0;
+   next_special_on = 0;
+}
+
+
+
+
+/********************************************************************************/
+/*										*/
+/*	Special update methods							*/
+/*										*/
+/********************************************************************************/
+
+void specialUpdate(unsigned long now)
+{
+   if (now >= next_special_check) {
+      checkSwitch(now);
+      next_special_check = addTime(now,SPECIAL_CHECK_TIME);
+    }
+   if (next_special_on > 0 && now >= next_special_on) {
+      triggerSpecialSolenoid(now);
+    }
+   if (next_special_off > 0 && now >= next_special_off) {
+      digitalWrite(SPECIAL_PIN_DRIVER,LOW);
+      next_special_on = addTime(now,SPECIAL_OFF_TIME);
+    }
+}
+
+
+
+
+static void checkSwitch(unsigned long now)
+{
+   if (special_disable) {
+      special_switch = NO_SPECIAL;
+      return;
+    }
+
+   if (special_switch != NO_SPECIAL) cur_special = special_switch;
+   else cur_special = (cur_special + 1) % NUM_SPECIAL;
+
+   for (int i = 0; i < NUM_SPECIAL; ++i) {
+      int sts = digitalRead(SPECIAL_PIN_IN(cur_special));
+      if (sts == SPECIAL_ON) {
+	 if (special_switch != cur_special) {
+	    special_switch = cur_special;
+	    triggerSpecialSolenoid(now);
+	  }
+	 break;
+       }
+      else if (special_switch != NO_SPECIAL) {
+	 special_switch = NO_SPECIAL;
+	 triggerSpecialSolenoid(now);
+       }
+      cur_special = (cur_special + 1) % NUM_SPECIAL;
+    }
+}
+
+
+
+static void removeSpecialSolenoid()
+{
+   digitalWrite(SPECIAL_PIN_DRIVER,LOW);
+   next_special_off = 0;
+   next_special_on = 0;
+   special_switch = NO_SPECIAL;
+}
+
+
+
+static void triggerSpecialSolenoid(unsigned long now)
+{
+   if (special_switch == NO_SPECIAL) {
+      removeSpecialSolenoid();
+    }
+   else {
+      digitalWrite(SPECIAL_PIN_OUT_SELECT0,((special_switch & 0x1) != 0) ? HIGH : LOW);
+      digitalWrite(SPECIAL_PIN_OUT_SELECT1,((special_switch & 0x2) != 0) ? HIGH : LOW);
+      digitalWrite(SPECIAL_PIN_OUT_SELECT2,((special_switch & 0x4) != 0) ? HIGH : LOW);
+      digitalWrite(SPECIAL_PIN_DRIVER,HIGH);
+      next_special_off = addTime(now,SPECIAL_ON_TIME);
+    }
+}
+
+
+
+
+/* end of special.ino */
+
