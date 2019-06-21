@@ -35,6 +35,8 @@ void specialDisable()
 {
    special_disable = true;
    digitalWrite(SPECIAL_PIN_FLIPPER_ENABLE,LOW);
+   leftFlipper(false);
+   rightFlipper(false);
    removeSpecialSolenoid();
 }
 
@@ -44,6 +46,19 @@ void specialEnable()
    special_disable = false;
    digitalWrite(SPECIAL_PIN_FLIPPER_ENABLE,HIGH);
 }
+
+
+void leftFlipper(bool on)
+{
+   digitalWrite(SPECIAL_PIN_LEFT_FLIPPER,(on ? HIGH : LOW));     
+}
+
+
+void rightFlipper(bool on)
+{
+   digitalWrite(SPECIAL_PIN_RIGHT_FLIPPER,(on ? HIGH : LOW));          
+}
+
 
 
 

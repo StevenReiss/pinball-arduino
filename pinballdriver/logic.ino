@@ -183,6 +183,7 @@ void gameOver()
 {
    disableAllLights();
    removeAllSolenoids();
+   specialDisable();
 
    for (int i = 0; i < NUM_PLAYER; ++i) initPlayer(i);
    game_data.current_player = 0;
@@ -344,6 +345,7 @@ static void startTurn()
    updatePlayerInfo();
    checkHighScore();
    releaseBall();
+   specialEnable();
 }
 
 
@@ -865,6 +867,7 @@ static void endTurn()
       if (game_data.is_tilt) {
 	 lightOff(LIGHT_TILT);
 	 game_data.is_tilt = false;
+         specialEnable();
        }
       lightOn(LIGHT_PLAYER_1_UP + next);
       resetStars();
@@ -1094,6 +1097,7 @@ static void tilt()
    game_data.is_tilt = true;
    game_data.free_balls = 0;
    disableShootAgain();
+   specialDisable();
 }
 
 
