@@ -30,7 +30,7 @@ static unsigned long next_light_rowset; 	      // next time to change rows
 
 void setLight(int lno,bool fg)
 {
-   lights[lno] = fg;		
+   lights[lno] = fg;	
 }
 
 
@@ -67,6 +67,16 @@ bool isLightEnabled(int lno)
 
 void lightsSetup()
 {
+   digitalWrite(LIGHT_PIN_DRIVE0,LOW);
+   digitalWrite(LIGHT_PIN_DRIVE1,LOW);
+   digitalWrite(LIGHT_PIN_DRIVE2,LOW);
+   digitalWrite(LIGHT_PIN_DRIVE3,LOW);
+   digitalWrite(LIGHT_PIN_DRIVE4,LOW);
+   digitalWrite(LIGHT_PIN_DRIVE5,LOW);
+   digitalWrite(LIGHT_PIN_DRIVE6,LOW);
+   digitalWrite(LIGHT_PIN_DRIVE7,LOW);
+   digitalWrite(LIGHT_PIN_SELECT,LOW);
+
    pinMode(LIGHT_PIN_SELECT0,OUTPUT);
    pinMode(LIGHT_PIN_SELECT1,OUTPUT);
    pinMode(LIGHT_PIN_SELECT2,OUTPUT);
@@ -134,6 +144,29 @@ void lightsUpdate(unsigned long now)
       next_light_pulse = addTime(now,LIGHT_PULSE_TIME);
     }
 }
+
+
+
+
+/********************************************************************************/
+/*										*/
+/*	Reset methods								*/
+/*										*/
+/********************************************************************************/
+
+void lightsReset()
+{
+   digitalWrite(LIGHT_PIN_DRIVE0,LOW);
+   digitalWrite(LIGHT_PIN_DRIVE1,LOW);
+   digitalWrite(LIGHT_PIN_DRIVE2,LOW);
+   digitalWrite(LIGHT_PIN_DRIVE3,LOW);
+   digitalWrite(LIGHT_PIN_DRIVE4,LOW);
+   digitalWrite(LIGHT_PIN_DRIVE5,LOW);
+   digitalWrite(LIGHT_PIN_DRIVE6,LOW);
+   digitalWrite(LIGHT_PIN_DRIVE7,LOW);
+   digitalWrite(LIGHT_PIN_SELECT,LOW);
+}
+
 
 
 

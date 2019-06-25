@@ -50,13 +50,13 @@ void specialEnable()
 
 void leftFlipper(bool on)
 {
-   digitalWrite(SPECIAL_PIN_LEFT_FLIPPER,(on ? HIGH : LOW));     
+   digitalWrite(SPECIAL_PIN_LEFT_FLIPPER,(on ? HIGH : LOW));	
 }
 
 
 void rightFlipper(bool on)
 {
-   digitalWrite(SPECIAL_PIN_RIGHT_FLIPPER,(on ? HIGH : LOW));          
+   digitalWrite(SPECIAL_PIN_RIGHT_FLIPPER,(on ? HIGH : LOW));	
 }
 
 
@@ -143,6 +143,25 @@ void specialUpdate(unsigned long now)
 }
 
 
+
+/********************************************************************************/
+/*										*/
+/*	Special reset methods							*/
+/*										*/
+/********************************************************************************/
+
+void specialReset()
+{
+   specialDisable();	
+}
+
+
+
+/********************************************************************************/
+/*										*/
+/*	Special action methods							*/
+/*										*/
+/********************************************************************************/
 
 
 static void checkSwitch(unsigned long now)

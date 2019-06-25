@@ -108,7 +108,7 @@ void switchesWrap()
 
 /********************************************************************************/
 /*										*/
-/*	Switch action methods							*/
+/*	Switch loop  methods							*/
 /*										*/
 /********************************************************************************/
 
@@ -130,6 +130,19 @@ void switchesUpdate(unsigned long now)
       next_switch_select = addTime(now,SWITCH_CHECK_TIME - SWITCH_DELAY_TIME);
     }
 }
+
+
+void switchesReset()
+{
+
+}
+
+
+/********************************************************************************/
+/*										  */
+/*	Switch action methods							*/
+/*										*/
+/********************************************************************************/
 
 
 static void handleSelect()

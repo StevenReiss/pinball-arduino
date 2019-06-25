@@ -33,13 +33,13 @@ void queueSolenoid(int which)
    if ((solenoid_queued & bit) != 0) return;
    solenoid_queued |= bit;
    solenoid_queue[solenoid_end] = which;
-   solenoid_end = (solenoid_end + 1) % NUM_SOLENOID;	
+   solenoid_end = (solenoid_end + 1) % NUM_SOLENOID;
 }
 
 
 void removeAllSolenoids()
 {
-   solenoid_start = solenoid_end = 0;	
+   solenoid_start = solenoid_end = 0;
    solenoid_queued = 0;
    turnOffSolenoid();
 }
@@ -136,6 +136,18 @@ static void turnOnSolenoid()
 
    solenoid_queued &= ~bit;
    solenoid_on = true;
+}
+
+
+/********************************************************************************/
+/*										*/
+/*	Reset methods								*/
+/*										*/
+/********************************************************************************/
+
+void solenoidsReset()
+{
+   digitalWrite(SOLENOID_PIN_DRIVER,LOW);
 }
 
 

@@ -26,6 +26,7 @@ static int switch_down;
 static int test_counter;
 static bool test_state;
 static int display_counter;
+static bool first_time;
 
 
 
@@ -37,6 +38,22 @@ static int display_counter;
 
 void testingSetup()
 {
+   test_mode = TEST_IDLE;
+   next_test_check = 0;
+   next_test_update = 0;
+   next_display_count = 0;
+   switch_down = 0;
+   test_counter = 0;
+   display_counter = 0; 
+   first_time = true;
+}
+
+
+
+void testingStart()
+{
+   first_time = false;
+
    Serial.println("TESTING START");
 
    test_mode = TEST_IDLE;
@@ -61,6 +78,8 @@ void testingSetup()
 
 void testingWrap()
 {
+   Serial.println("TESTING WRAP");
+
    if (next_test_check != 0) next_test_check = 1;
    next_test_update = 0;
    next_display_count = 1;
@@ -77,6 +96,8 @@ void testingWrap()
 
 void testingUpdate(unsigned long now)
 {
+   if (first_time) testingStart();
+
    if (now >= next_test_update) {
       checkTestSwitch();
       handleSwitchChanges(4,testSwitchOff,testSwitchOn);
@@ -92,6 +113,14 @@ void testingUpdate(unsigned long now)
       next_display_count = addTime(now,TEST_DISPLAY_COUNT_INTERVAL);
     }
 }
+
+
+
+void testingReset()
+{
+   Serial.println("TESTING RESET");
+}
+
 
 
 /********************************************************************************/

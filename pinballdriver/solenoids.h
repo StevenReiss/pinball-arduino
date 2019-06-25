@@ -14,10 +14,10 @@
 /********************************************************************************/
 
 const int SOLENOID_PIN_DRIVER = SOLENOID_PIN_START + 0;
-const int SOLENOID_PIN_SELECT0 = SOLENOID_PIN_START + 1;
-const int SOLENOID_PIN_SELECT1 = SOLENOID_PIN_START + 2;
-const int SOLENOID_PIN_SELECT2 = SOLENOID_PIN_START + 3;
-const int SOLENOID_PIN_SELECT3 = SOLENOID_PIN_START + 4;
+const int SOLENOID_PIN_SELECT0 = SOLENOID_PIN_START + 2;
+const int SOLENOID_PIN_SELECT1 = SOLENOID_PIN_START + 4;
+const int SOLENOID_PIN_SELECT2 = SOLENOID_PIN_START + 6;
+const int SOLENOID_PIN_SELECT3 = SOLENOID_PIN_START + 8;
 
 
 /********************************************************************************/

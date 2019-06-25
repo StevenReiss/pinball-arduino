@@ -147,6 +147,22 @@ void displayUpdate(unsigned long now)
 }
 
 
+
+/********************************************************************************/
+/*										*/
+/*	Reset methods								*/
+/*										*/
+/********************************************************************************/
+
+void displayReset()
+{
+   digitalWrite(DISPLAY_DIGIT1_PIN,DIGIT_HIDE);
+   digitalWrite(DISPLAY_DIGIT2_PIN,DIGIT_HIDE);
+   digitalWrite(DISPLAY_DIGIT3_PIN,DIGIT_HIDE);
+}
+
+
+
 /********************************************************************************/
 /*										*/
 /*	Update task -- update bits based on values				*/
@@ -201,7 +217,7 @@ static int getDigits(int v,unsigned int digits[])
       digits[j++] = v % 10;
       v = v / 10;
     }
-   if (j == 0) digits[j++] = 0; 
+   if (j == 0) digits[j++] = 0;
 
    return j;
 }

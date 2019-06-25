@@ -146,6 +146,11 @@ static void handleGamePlayLogic(unsigned long now)
 }
 
 
+void logicReset()
+{ }
+
+
+
 
 /********************************************************************************/
 /*										*/
@@ -546,7 +551,7 @@ static void incrBonus()
       case 9000 :
 	 game_data.bonus_value = 10000;
 	 lightOff(LIGHT_BONUS_9K);
-	 lightOn(LIGHT_BONUS_10K);   
+	 lightOn(LIGHT_BONUS_10K);
 	 break;
       case 10000 :
 	 game_data.bonus_value = 20000;
@@ -867,7 +872,7 @@ static void endTurn()
       if (game_data.is_tilt) {
 	 lightOff(LIGHT_TILT);
 	 game_data.is_tilt = false;
-         specialEnable();
+	 specialEnable();
        }
       lightOn(LIGHT_PLAYER_1_UP + next);
       resetStars();
