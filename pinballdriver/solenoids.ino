@@ -61,7 +61,7 @@ void solenoidsSetup()
    pinMode(SOLENOID_PIN_SELECT2,OUTPUT);
    pinMode(SOLENOID_PIN_SELECT3,OUTPUT);
 
-   digitalWrite(SOLENOID_PIN_DRIVER,LOW);
+   digitalWrite(SOLENOID_PIN_DRIVER,SOLENOID_DRIVER_OFF);
    digitalWrite(SOLENOID_PIN_SELECT0,LOW);
    digitalWrite(SOLENOID_PIN_SELECT1,LOW);
    digitalWrite(SOLENOID_PIN_SELECT2,LOW);
@@ -117,14 +117,14 @@ void solenoidsUpdate(unsigned long now)
 
 static void turnOffSolenoid()
 {
-   digitalWrite(SOLENOID_PIN_DRIVER,LOW);
+   digitalWrite(SOLENOID_PIN_DRIVER,SOLENOID_DRIVER_OFF);
    solenoid_on = false;
 }
 
 
 static void turnOnSolenoid()
 {
-   int which = solenoid_queue[solenoid_start];
+   int which = solenoid_queue[solenoid_start] + FIRST_SOLENOID;
    solenoid_start = (solenoid_start + 1) % NUM_SOLENOID;
    int bit = 1 << which;
 
@@ -132,7 +132,7 @@ static void turnOnSolenoid()
    digitalWrite(SOLENOID_PIN_SELECT1,((which & 0x2) != 0) ? HIGH : LOW);
    digitalWrite(SOLENOID_PIN_SELECT2,((which & 0x4) != 0) ? HIGH : LOW);
    digitalWrite(SOLENOID_PIN_SELECT3,((which & 0x8) != 0) ? HIGH : LOW);
-   digitalWrite(SOLENOID_PIN_DRIVER,HIGH);
+   digitalWrite(SOLENOID_PIN_DRIVER,SOLENOID_DRIVER_ON);
 
    solenoid_queued &= ~bit;
    solenoid_on = true;
@@ -147,7 +147,7 @@ static void turnOnSolenoid()
 
 void solenoidsReset()
 {
-   digitalWrite(SOLENOID_PIN_DRIVER,LOW);
+   removeAllSolenoids();
 }
 
 

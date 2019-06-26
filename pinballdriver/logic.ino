@@ -77,7 +77,7 @@ void logicWrap()
 {
    next_logic = 0;
    next_highscore = 0;
-   if (next_gameup != 0) next_gameup = 500000;
+   if (next_gameup != 0) next_gameup = LOGIC_GAME_UP_STEP_TIME;
 }
 
 

@@ -18,6 +18,8 @@
 /********************************************************************************/
 
 static TestMode test_mode;
+static TestMode last_test_mode;
+
 static unsigned long next_test_update;
 static unsigned long next_test_check;
 static unsigned long next_display_count;
@@ -39,20 +41,24 @@ static bool first_time;
 void testingSetup()
 {
    test_mode = TEST_IDLE;
+   last_test_mode = TEST_IDLE;
    next_test_check = 0;
    next_test_update = 0;
    next_display_count = 0;
    switch_down = 0;
    test_counter = 0;
-   display_counter = 0; 
+   display_counter = 0;
    first_time = true;
 }
 
 
 
-void testingStart()
+static void testingStart()
 {
    first_time = false;
+
+   // make sure everything is off
+   reset();
 
    Serial.println("TESTING START");
 
@@ -99,9 +105,9 @@ void testingUpdate(unsigned long now)
    if (first_time) testingStart();
 
    if (now >= next_test_update) {
-      checkTestSwitch();
       handleSwitchChanges(4,testSwitchOff,testSwitchOn);
       next_test_update = addTime(now,TEST_CHECK_TIME);
+      checkTestSwitch();
     }
 
    if (next_test_check > 0 && now >= next_test_check) {
@@ -150,7 +156,7 @@ static void nextTestMode()
    next_test_check = 0;
    if (next_display_count == 0) next_display_count = addTime(micros(),TEST_DISPLAY_COUNT_INTERVAL);
 
-   switch (test_mode) {
+   switch (last_test_mode) {
       default :
       case TEST_IDLE :
 	 startSolenoidTest();
@@ -162,9 +168,13 @@ static void nextTestMode()
 	 startLightTest();
 	 break;
       case TEST_LIGHTS :
+	 startSpecialTest();
+	 break;
+      case TEST_SPECIALS :
 	 setTestIdle();
 	 break;
     }
+   last_test_mode = test_mode;
 }
 
 
@@ -182,6 +192,9 @@ static void updateTestMode()
 	 break;
       case TEST_LIGHTS :
 	 nextLightTest();
+	 break;
+      case TEST_SPECIALS :
+	 nextSpecialTest();
 	 break;
     }
 }
@@ -346,6 +359,25 @@ static void displayCount()
 
    ++display_counter;
 
+}
+
+
+/********************************************************************************/
+/*										*/
+/*	Special testing 							*/
+/*										*/
+/********************************************************************************/
+
+static void startSpecialTest()
+{
+   test_mode = TEST_SPECIALS;
+}
+
+
+
+static void nextSpecialTest()
+{
+   setTestIdle();
 }
 
 

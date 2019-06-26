@@ -35,7 +35,7 @@ const int NUM_SOUND = 8;
 
 const int SOUND_QUEUE_SIZE = NUM_SOUND*4;
 
-const long SOUND_ON_TIME = 5000;
+const long SOUND_ON_TIME = 100;
 const long SOUND_OFF_TIME = 0;
 const long SOUND_CHECK_TIME = 5000;
 

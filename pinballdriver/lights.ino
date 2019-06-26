@@ -93,15 +93,15 @@ void lightsSetup()
    digitalWrite(LIGHT_PIN_SELECT0,LOW);
    digitalWrite(LIGHT_PIN_SELECT1,LOW);
    digitalWrite(LIGHT_PIN_SELECT2,LOW);
-   digitalWrite(LIGHT_PIN_DRIVE0,LOW);
-   digitalWrite(LIGHT_PIN_DRIVE1,LOW);
-   digitalWrite(LIGHT_PIN_DRIVE2,LOW);
-   digitalWrite(LIGHT_PIN_DRIVE3,LOW);
-   digitalWrite(LIGHT_PIN_DRIVE4,LOW);
-   digitalWrite(LIGHT_PIN_DRIVE5,LOW);
-   digitalWrite(LIGHT_PIN_DRIVE6,LOW);
-   digitalWrite(LIGHT_PIN_DRIVE7,LOW);
-   digitalWrite(LIGHT_PIN_SELECT,LOW);
+   digitalWrite(LIGHT_PIN_DRIVE0,LIGHT_DRIVE_OFF);
+   digitalWrite(LIGHT_PIN_DRIVE1,LIGHT_DRIVE_OFF);
+   digitalWrite(LIGHT_PIN_DRIVE2,LIGHT_DRIVE_OFF);
+   digitalWrite(LIGHT_PIN_DRIVE3,LIGHT_DRIVE_OFF);
+   digitalWrite(LIGHT_PIN_DRIVE4,LIGHT_DRIVE_OFF);
+   digitalWrite(LIGHT_PIN_DRIVE5,LIGHT_DRIVE_OFF);
+   digitalWrite(LIGHT_PIN_DRIVE6,LIGHT_DRIVE_OFF);
+   digitalWrite(LIGHT_PIN_DRIVE7,LIGHT_DRIVE_OFF);
+   digitalWrite(LIGHT_PIN_SELECT,LIGHT_DRIVE_OFF);
 
    for (int i = 0; i < NUM_LIGHTS; ++i) lights[i] = false;
    start_row = 0;
@@ -156,15 +156,16 @@ void lightsUpdate(unsigned long now)
 
 void lightsReset()
 {
-   digitalWrite(LIGHT_PIN_DRIVE0,LOW);
-   digitalWrite(LIGHT_PIN_DRIVE1,LOW);
-   digitalWrite(LIGHT_PIN_DRIVE2,LOW);
-   digitalWrite(LIGHT_PIN_DRIVE3,LOW);
-   digitalWrite(LIGHT_PIN_DRIVE4,LOW);
-   digitalWrite(LIGHT_PIN_DRIVE5,LOW);
-   digitalWrite(LIGHT_PIN_DRIVE6,LOW);
-   digitalWrite(LIGHT_PIN_DRIVE7,LOW);
    digitalWrite(LIGHT_PIN_SELECT,LOW);
+   digitalWrite(LIGHT_PIN_DRIVE0,LIGHT_DRIVE_OFF);
+   digitalWrite(LIGHT_PIN_DRIVE1,LIGHT_DRIVE_OFF);
+   digitalWrite(LIGHT_PIN_DRIVE2,LIGHT_DRIVE_OFF);
+   digitalWrite(LIGHT_PIN_DRIVE3,LIGHT_DRIVE_OFF);
+   digitalWrite(LIGHT_PIN_DRIVE4,LIGHT_DRIVE_OFF);
+   digitalWrite(LIGHT_PIN_DRIVE5,LIGHT_DRIVE_OFF);
+   digitalWrite(LIGHT_PIN_DRIVE6,LIGHT_DRIVE_OFF);
+   digitalWrite(LIGHT_PIN_DRIVE7,LIGHT_DRIVE_OFF);
+   digitalWrite(LIGHT_PIN_SELECT,LIGHT_DRIVE_OFF);
 }
 
 
@@ -197,8 +198,8 @@ static void updatePulse()
    digitalWrite(LIGHT_PIN_SELECT2,((row & 4) != 0? HIGH : LOW));
 
    for (int j = 0; j < NUM_LIGHT_COLUMNS; ++j) {
-      if (lights[base+j]) digitalWrite(LIGHT_PIN_DRIVE(j),HIGH);
-      else digitalWrite(LIGHT_PIN_DRIVE(j),LOW);
+      if (lights[base+j]) digitalWrite(LIGHT_PIN_DRIVE(j),LIGHT_DRIVE_ON);
+      else digitalWrite(LIGHT_PIN_DRIVE(j),LIGHT_DRIVE_OFF);
     }
 
    digitalWrite(LIGHT_PIN_SELECT,HIGH);

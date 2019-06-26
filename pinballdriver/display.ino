@@ -34,21 +34,21 @@ static int set_count;
 
 void setDisplay(int i,long value)
 {
+   if (value >= MAX_VALUE) value = value % MAX_VALUE;
    display_value[i] = value;
-   if (display_value[i] >= MAX_VALUE) display_value[i] = display_value[i] % MAX_VALUE;
 }
 
 
 void setDisplayLeft(int i)
 {
-   if (i >= 1000) i = 999;
+   if (i >= MAX_HALF_VALUE) i = i % MAX_HALF_VALUE;
    display_left = i;
 }
 
 
 void setDisplayRight(int i)
 {
-   if (i >= 1000) i = 999;
+   if (i >= MAX_HALF_VALUE) i = i % MAX_HALF_VALUE;
    display_right = i;
 }
 
@@ -90,12 +90,12 @@ void displaySetup()
    pinMode(DISPLAY_DIGIT2_PIN,OUTPUT);
    pinMode(DISPLAY_DIGIT3_PIN,OUTPUT);
 
-   digitalWrite(DISPLAY_DATA_PIN,0);
-   digitalWrite(DISPLAY_CLOCK_PIN,0);
-   digitalWrite(DISPLAY_LATCH_PIN,0);
-   digitalWrite(DISPLAY_CLOCK_MPX0_PIN,0);
-   digitalWrite(DISPLAY_CLOCK_MPX1_PIN,0);
-   digitalWrite(DISPLAY_CLOCK_MPX2_PIN,0);
+   digitalWrite(DISPLAY_DATA_PIN,LOW);
+   digitalWrite(DISPLAY_CLOCK_PIN,LOW);
+   digitalWrite(DISPLAY_LATCH_PIN,LOW);
+   digitalWrite(DISPLAY_CLOCK_MPX0_PIN,LOW);
+   digitalWrite(DISPLAY_CLOCK_MPX1_PIN,LOW);
+   digitalWrite(DISPLAY_CLOCK_MPX2_PIN,LOW);
    digitalWrite(DISPLAY_DIGIT1_PIN,DIGIT_HIDE);
    digitalWrite(DISPLAY_DIGIT2_PIN,DIGIT_HIDE);
    digitalWrite(DISPLAY_DIGIT3_PIN,DIGIT_HIDE);

@@ -4,7 +4,7 @@
 /*                                                                              */
 /********************************************************************************/
 
-enum TestMode { TEST_IDLE, TEST_SOLENOIDS, TEST_SOUNDS, TEST_LIGHTS };
+enum TestMode { TEST_IDLE, TEST_SOLENOIDS, TEST_SOUNDS, TEST_LIGHTS, TEST_SPECIALS };
 
 const unsigned long TEST_CHECK_TIME = 10000;
 

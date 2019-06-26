@@ -35,8 +35,6 @@ void specialDisable()
 {
    special_disable = true;
    digitalWrite(SPECIAL_PIN_FLIPPER_ENABLE,LOW);
-   leftFlipper(false);
-   rightFlipper(false);
    removeSpecialSolenoid();
 }
 
@@ -45,18 +43,6 @@ void specialEnable()
 {
    special_disable = false;
    digitalWrite(SPECIAL_PIN_FLIPPER_ENABLE,HIGH);
-}
-
-
-void leftFlipper(bool on)
-{
-   digitalWrite(SPECIAL_PIN_LEFT_FLIPPER,(on ? HIGH : LOW));	
-}
-
-
-void rightFlipper(bool on)
-{
-   digitalWrite(SPECIAL_PIN_RIGHT_FLIPPER,(on ? HIGH : LOW));	
 }
 
 
@@ -81,13 +67,11 @@ void specialSetup()
    pinMode(SPECIAL_PIN_IN_5,INPUT_PULLUP);
    pinMode(SPECIAL_PIN_DRIVER,OUTPUT);
    pinMode(SPECIAL_PIN_FLIPPER_ENABLE,OUTPUT);
-   pinMode(SPECIAL_PIN_LEFT_FLIPPER,OUTPUT);
-   pinMode(SPECIAL_PIN_RIGHT_FLIPPER,OUTPUT);
 
    next_special_check = 0;
    next_special_off = 0;
    next_special_on = 0;
-   special_disable = false;
+   special_disable = true;
    cur_special = 0;
    special_switch = NO_SPECIAL;
 
@@ -96,10 +80,8 @@ void specialSetup()
    digitalWrite(SPECIAL_PIN_OUT_SELECT2,LOW);
    digitalWrite(SPECIAL_PIN_DRIVER,LOW);
    digitalWrite(SPECIAL_PIN_FLIPPER_ENABLE,LOW);
-   digitalWrite(SPECIAL_PIN_LEFT_FLIPPER,LOW);
-   digitalWrite(SPECIAL_PIN_RIGHT_FLIPPER,LOW);
 
-   specialEnable();
+   specialDisable();
 }
 
 

@@ -28,8 +28,11 @@
 /********************************************************************************/
 
 static unsigned long last_count;
-static bool	     is_testing;
 static unsigned long next_test_switch_check;
+static bool		is_testing;
+static byte		test_down;
+static byte		reset_down;
+
 
 
 
@@ -57,9 +60,9 @@ void setup()
    logicSetup();
    testingSetup();
 
+   test_down = 0;
+   reset_down = 0;
    is_testing = false;
-   int sts = digitalRead(TEST_PIN);
-   if (sts == LOW) is_testing = true;
 
    next_test_switch_check = 0;
 }
@@ -102,11 +105,8 @@ void loop()
    else logicUpdate(now);
 
    if (now > next_test_switch_check) {
-      int sts = digitalRead(TEST_PIN);
-      if (sts == LOW) is_testing = true;
+      checkControlSwitches();
       next_test_switch_check = addTime(now,TEST_SWITCH_CHECK_TIME);
-      sts = digitalRead(SOFT_RESET_PIN);
-      if (sts == LOW) softReset();
     }
 }
 
@@ -143,6 +143,35 @@ void softReset()
 
 /********************************************************************************/
 /*										*/
+/*	Control switch checking 						*/
+/*										*/
+/********************************************************************************/
+
+static void checkControlSwitches()
+{
+   if (!is_testing) {
+      int sts = digitalRead(TEST_PIN);
+      if (sts == LOW) ++test_down;
+      else if (test_down >= TEST_DOWN_CYCLES) {
+	 test_down = 0;
+	 is_testing = true;
+	 reset();
+       }
+      else test_down = 0;
+    }
+   int sts = digitalRead(SOFT_RESET_PIN);
+   if (sts == LOW) ++reset_down;
+   else if (reset_down >= RESET_DOWN_CYCLES) {
+      reset_down = 0;
+      softReset();
+    }
+   else reset_down = 0;
+}
+
+
+
+/********************************************************************************/
+/*										*/
 /*	Helper methods								*/
 /*										*/
 /********************************************************************************/
@@ -156,37 +185,6 @@ unsigned long addTime(unsigned long t0,unsigned long t1)
 
 
 
-/********************************************************************************/
-/*										*/
-/*	Soft resest handling							*/
-/*										*/
-/********************************************************************************/
-
-extern bool system_rtc_mem_read(uint8 src_addr, void *des_addr, uint16 load_size);
-extern void __real_system_restart_local();
-
-
-void __wrap_system_restart_local()
-{
-   register uint32_t sp asm("a1");
-
-   struct rst_info rst_info = {0};
-   system_rtc_mem_read(0, &rst_info, sizeof(rst_info));
-   if (rst_info.reason != REASON_SOFT_WDT_RST &&
-	  rst_info.reason != REASON_EXCEPTION_RST &&
-	  rst_info.reason != REASON_WDT_RST)
-      {
-      return;
-    }
-
-   reset();
-
-   delayMicroseconds(10000);
-
-   __real_system_restart_local();
-
-}
-
-
-
 /* end of pinballdriver.ino */
+
+
