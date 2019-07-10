@@ -11,21 +11,21 @@
 /*                                                                              */
 /********************************************************************************/
 
-const int LIGHT_PIN_SELECT0 = LIGHT_PIN_START + 0;
-const int LIGHT_PIN_SELECT1 = LIGHT_PIN_START + 2;
-const int LIGHT_PIN_SELECT2 = LIGHT_PIN_START + 4;
-const int LIGHT_PIN_SELECT = LIGHT_PIN_START + 6;
+const int LIGHT_PIN_SELECT0 = LIGHT_PIN_START + 22;
+const int LIGHT_PIN_SELECT1 = LIGHT_PIN_START + 20;
+const int LIGHT_PIN_SELECT2 = LIGHT_PIN_START + 18;
+const int LIGHT_PIN_ENABLE = LIGHT_PIN_START + 16;
 
-const int LIGHT_PIN_DRIVE0 = LIGHT_PIN_START + 8;
-const int LIGHT_PIN_DRIVE1 = LIGHT_PIN_START + 10;
-const int LIGHT_PIN_DRIVE2 = LIGHT_PIN_START + 12;
-const int LIGHT_PIN_DRIVE3 = LIGHT_PIN_START + 14;
-const int LIGHT_PIN_DRIVE4 = LIGHT_PIN_START + 16;
-const int LIGHT_PIN_DRIVE5 = LIGHT_PIN_START + 18;
-const int LIGHT_PIN_DRIVE6 = LIGHT_PIN_START + 20;
-const int LIGHT_PIN_DRIVE7 = LIGHT_PIN_START + 22;
+const int LIGHT_PIN_DRIVE0 = LIGHT_PIN_START + 14;
+const int LIGHT_PIN_DRIVE1 = LIGHT_PIN_START + 12;
+const int LIGHT_PIN_DRIVE2 = LIGHT_PIN_START + 10;
+const int LIGHT_PIN_DRIVE3 = LIGHT_PIN_START + 8;
+const int LIGHT_PIN_DRIVE4 = LIGHT_PIN_START + 6;
+const int LIGHT_PIN_DRIVE5 = LIGHT_PIN_START + 4;
+const int LIGHT_PIN_DRIVE6 = LIGHT_PIN_START + 2;
+const int LIGHT_PIN_DRIVE7 = LIGHT_PIN_START + 0;
 
-#define LIGHT_PIN_DRIVE(i) (LIGHT_PIN_DRIVE0 + i*2)
+#define LIGHT_PIN_DRIVE(i) (LIGHT_PIN_DRIVE0 - i*2)
 
 
 

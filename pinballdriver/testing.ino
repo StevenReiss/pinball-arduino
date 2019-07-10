@@ -19,13 +19,17 @@
 
 static TestMode test_mode;
 static TestMode last_test_mode;
+static int test_counter;
 
 static unsigned long next_test_update;
 static unsigned long next_test_check;
 static unsigned long next_display_count;
 static int switch_down;
+static int mem_protect;
+static int auto_manual;
+static int advance_btn;
 
-static int test_counter;
+
 static bool test_state;
 static int display_counter;
 static bool first_time;
@@ -49,6 +53,14 @@ void testingSetup()
    test_counter = 0;
    display_counter = 0;
    first_time = true;
+   mem_protect = HIGH;
+   auto_manual = HIGH;
+   advance_btn = HIGH;
+
+   pinMode(TEST_PIN_MEM_PROTECT,INPUT_PULLUP);
+   pinMode(TEST_PIN_AUTO_MANUAL,INPUT_PULLUP);
+   pinMode(TEST_PIN_ADVANCE,INPUT_PULLUP);
+   // pinMode(TEST_PIN_BUTTON,INPUT_PULLUP);	// done in main driver
 }
 
 
@@ -107,7 +119,7 @@ void testingUpdate(unsigned long now)
    if (now >= next_test_update) {
       handleSwitchChanges(4,testSwitchOff,testSwitchOn);
       next_test_update = addTime(now,TEST_CHECK_TIME);
-      checkTestSwitch();
+      checkTestSwitches();
     }
 
    if (next_test_check > 0 && now >= next_test_check) {
@@ -135,7 +147,7 @@ void testingReset()
 /*										*/
 /********************************************************************************/
 
-static void checkTestSwitch()
+static void checkTestSwitches()
 {
    int sts = digitalRead(TEST_PIN);
    if (sts == LOW) {
@@ -147,6 +159,27 @@ static void checkTestSwitch()
    else {
       nextTestMode();
     }
+
+   int sts1 = digitalRead(TEST_PIN_MEM_PROTECT);
+   if (sts1 != mem_protect) {
+      mem_protect = sts1;
+      Serial.print("TEST MEM_PROTECT ");
+      Serial.println(sts1);
+    }
+
+   int sts2 = digitalRead(TEST_PIN_AUTO_MANUAL);
+   if (sts2 != auto_manual) {
+      auto_manual = sts2;
+      Serial.print("TEST AUTO_MANUAL ");
+      Serial.println(sts2);
+    }
+
+   int sts3 = digitalRead(TEST_PIN_ADVANCE);
+   if (sts3 != advance_btn) {
+      advance_btn = sts3;
+      Serial.print("TEST ADVANCE ");
+      Serial.println(sts3);
+    }
 }
 
 
@@ -155,6 +188,27 @@ static void nextTestMode()
 {
    next_test_check = 0;
    if (next_display_count == 0) next_display_count = addTime(micros(),TEST_DISPLAY_COUNT_INTERVAL);
+
+   switch (test_mode) {
+      case TEST_IDLE :
+	 break;
+      case TEST_SOLENOIDS :
+	 ++test_counter;
+	 if (test_counter < NUM_SOLENOID) return;
+	 break;
+      case TEST_SOUNDS :
+	 ++test_counter;
+	 if (test_counter < NUM_SOUND) return;
+	 break;
+      case TEST_LIGHTS :
+	 ++test_counter;
+	 if (test_counter < NUM_LIGHTS) return;
+	 break;
+      case TEST_SPECIALS :
+	 ++test_counter;
+	 if (test_counter < NUM_SPECIAL) return;
+	 break;
+    }
 
    switch (last_test_mode) {
       default :
@@ -252,17 +306,10 @@ static void nextSolenoidTest()
    if (test_counter > NUM_SOLENOID) {
       setTestIdle();
     }
-   else if (test_counter == NUM_SOLENOID) {
-      Serial.println("TRIGGER ALL SOLENOIDS");
-      for (int i = 0; i < NUM_SOLENOID; ++i) queueSolenoid(i);
-      test_counter++;
-      next_test_check = addTime(micros(),TEST_SOLENOID_INTERVAL);
-    }
    else {
       Serial.print("TRIGGER SOLENOID ");
       Serial.println(test_counter);
       queueSolenoid(test_counter);
-      test_counter++;
       next_test_check = addTime(micros(),TEST_SOLENOID_INTERVAL);
     }
 }
@@ -295,7 +342,6 @@ static void nextSoundTest()
       Serial.print("TRIGGER SOUND ");
       Serial.println(test_counter);
       queueSound(test_counter);
-      test_counter++;
       next_test_check = addTime(micros(),TEST_SOUND_INTERVAL);
     }
 }
@@ -329,7 +375,6 @@ static void nextLightTest()
       Serial.println(test_counter);
       if (test_counter > 0) lightOff(test_counter-1);
       lightOn(test_counter);
-      test_counter++;
       next_test_check = addTime(micros(),TEST_LIGHT_INTERVAL);
     }
 }

@@ -75,7 +75,7 @@ void lightsSetup()
    digitalWrite(LIGHT_PIN_DRIVE5,LOW);
    digitalWrite(LIGHT_PIN_DRIVE6,LOW);
    digitalWrite(LIGHT_PIN_DRIVE7,LOW);
-   digitalWrite(LIGHT_PIN_SELECT,LOW);
+   digitalWrite(LIGHT_PIN_ENABLE,LOW);
 
    pinMode(LIGHT_PIN_SELECT0,OUTPUT);
    pinMode(LIGHT_PIN_SELECT1,OUTPUT);
@@ -88,7 +88,7 @@ void lightsSetup()
    pinMode(LIGHT_PIN_DRIVE5,OUTPUT);
    pinMode(LIGHT_PIN_DRIVE6,OUTPUT);
    pinMode(LIGHT_PIN_DRIVE7,OUTPUT);
-   pinMode(LIGHT_PIN_SELECT,OUTPUT);
+   pinMode(LIGHT_PIN_ENABLE,OUTPUT);
 
    digitalWrite(LIGHT_PIN_SELECT0,LOW);
    digitalWrite(LIGHT_PIN_SELECT1,LOW);
@@ -101,7 +101,7 @@ void lightsSetup()
    digitalWrite(LIGHT_PIN_DRIVE5,LIGHT_DRIVE_OFF);
    digitalWrite(LIGHT_PIN_DRIVE6,LIGHT_DRIVE_OFF);
    digitalWrite(LIGHT_PIN_DRIVE7,LIGHT_DRIVE_OFF);
-   digitalWrite(LIGHT_PIN_SELECT,LIGHT_DRIVE_OFF);
+   digitalWrite(LIGHT_PIN_ENABLE,LOW);
 
    for (int i = 0; i < NUM_LIGHTS; ++i) lights[i] = false;
    start_row = 0;
@@ -156,7 +156,7 @@ void lightsUpdate(unsigned long now)
 
 void lightsReset()
 {
-   digitalWrite(LIGHT_PIN_SELECT,LOW);
+   digitalWrite(LIGHT_PIN_ENABLE,LOW);
    digitalWrite(LIGHT_PIN_DRIVE0,LIGHT_DRIVE_OFF);
    digitalWrite(LIGHT_PIN_DRIVE1,LIGHT_DRIVE_OFF);
    digitalWrite(LIGHT_PIN_DRIVE2,LIGHT_DRIVE_OFF);
@@ -165,7 +165,7 @@ void lightsReset()
    digitalWrite(LIGHT_PIN_DRIVE5,LIGHT_DRIVE_OFF);
    digitalWrite(LIGHT_PIN_DRIVE6,LIGHT_DRIVE_OFF);
    digitalWrite(LIGHT_PIN_DRIVE7,LIGHT_DRIVE_OFF);
-   digitalWrite(LIGHT_PIN_SELECT,LIGHT_DRIVE_OFF);
+   digitalWrite(LIGHT_PIN_ENABLE,LIGHT_DRIVE_OFF);
 }
 
 
@@ -191,7 +191,7 @@ static void updatePulse()
    pulse_row = (pulse_row + 1) % LIGHT_NUM_ENABLED_ROW;
 
    int base = row * 8;
-   digitalWrite(LIGHT_PIN_SELECT,LOW);
+   digitalWrite(LIGHT_PIN_ENABLE,LOW);
 
    digitalWrite(LIGHT_PIN_SELECT0,((row & 1) != 0? HIGH : LOW));
    digitalWrite(LIGHT_PIN_SELECT1,((row & 2) != 0? HIGH : LOW));
@@ -202,7 +202,7 @@ static void updatePulse()
       else digitalWrite(LIGHT_PIN_DRIVE(j),LIGHT_DRIVE_OFF);
     }
 
-   digitalWrite(LIGHT_PIN_SELECT,HIGH);
+   digitalWrite(LIGHT_PIN_ENABLE,HIGH);
 }
 
 

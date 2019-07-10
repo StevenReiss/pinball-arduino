@@ -21,4 +21,19 @@ const unsigned long TEST_DISPLAY_COUNT_INTERVAL = 500000;
 const int TEST_BOUNCE = 2;
 
 
+
+/********************************************************************************/
+/*                                                                              */
+/*      Pin assignments for Testing                                             */
+/*                                                                              */
+/********************************************************************************/
+
+const int       TEST_PIN_BUTTON = TEST_PIN;
+const int       TEST_PIN_MEM_PROTECT = TEST_PIN_START;
+const int       TEST_PIN_AUTO_MANUAL = TEST_PIN_START + 2;
+const int       TEST_PIN_ADVANCE = TEST_PIN_START + 4;
+
+
+
+
 /* end of testing.h */

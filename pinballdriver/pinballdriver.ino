@@ -32,6 +32,7 @@ static unsigned long next_test_switch_check;
 static bool		is_testing;
 static byte		test_down;
 static byte		reset_down;
+static volatile int	watchdog_counter;
 
 
 
@@ -44,7 +45,7 @@ static byte		reset_down;
 
 void setup()
 {
-   Serial.begin(57600);
+   Serial.begin(115200);
    last_count = micros();
 
    pinMode(TEST_PIN,INPUT_PULLUP);
@@ -64,6 +65,8 @@ void setup()
    reset_down = 0;
    is_testing = false;
 
+   watchdog_counter = 0;
+
    next_test_switch_check = 0;
 }
 
@@ -78,6 +81,8 @@ void setup()
 
 void loop()
 {
+   watchdogReset();
+
    unsigned long now = micros();
    if (now < last_count || now == MAX_TIME) {
       displayWrap();
@@ -181,6 +186,84 @@ unsigned long addTime(unsigned long t0,unsigned long t1)
    long t2 = t0 + t1;
    if (t2 < t0 || t2 < t1) t2 = MAX_TIME;
    return t2;
+}
+
+
+
+/********************************************************************************/
+/*										*/
+/*	Watchdog methods							*/
+/*										*/
+/********************************************************************************/
+
+static void setupWatchdog()
+{
+   noInterrupts();
+
+   TCCR3A = 0;
+   TCCR3B = 0;
+   TCNT3 = 0;
+
+   bitSet(TCCR3B,WGM12);
+   bitSet(TCCR3B,CS21);
+
+   bitSet(TCCR3B,WGM32);		// ctc mode
+   bitSet(TCCR3B,CS32); 		// 1024 prescaler
+   bitSet(TCCR3B,CS30);
+
+   OCR3A = 235;   // F_CPU / (1024 * 66) - 1;	  // should be every 15 ms
+
+   bitSet(TIMSK3,OCIE3A);		// enable interrupts
+
+   watchdog_counter = 2;
+
+   interrupts();
+}
+
+
+static void watchdogReset()
+{
+   ++watchdog_counter;	
+}
+
+
+ISR(TIMER3_COMPA_vect)
+{
+   if (watchdog_counter == 0) reset();
+
+   if (watchdog_counter > 0) --watchdog_counter;
+}
+
+
+
+
+extern bool system_rtc_mem_read(uint8 src_addr, void *des_addr, uint16 load_size);
+extern void __real_system_restart_local();
+
+void __wrap_system_restart_local()
+{
+   static bool doing_reset = false;
+
+   if (doing_reset) return;
+   doing_reset = true;
+
+   register uint32_t sp asm("a1");
+
+   struct rst_info rst_info = {0};
+   system_rtc_mem_read(0, &rst_info, sizeof(rst_info));
+   if (rst_info.reason != REASON_SOFT_WDT_RST &&
+	  rst_info.reason != REASON_EXCEPTION_RST &&
+	  rst_info.reason != REASON_WDT_RST)
+      {
+      return;
+    }
+
+   reset();
+
+   delayMicroseconds(10000);
+
+   __real_system_restart_local();
+
 }
 
 

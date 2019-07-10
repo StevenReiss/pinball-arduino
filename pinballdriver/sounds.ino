@@ -79,7 +79,7 @@ void soundPlaySetup()
 
    pinMode(SOUND_PLAY_PWM_PIN,OUTPUT);
 
-   // setup timer 3 with fast PWM mode, noninverting
+   // setup timer 1 with fast PWM mode, noninverting (pins 11,12)
    // with timer clock prescaler = 1
    TCCR1A = 0;
    TCCR1B = 0;

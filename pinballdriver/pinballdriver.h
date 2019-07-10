@@ -39,7 +39,7 @@ const int	SOLENOID_PIN_START = 22;
 const int	NUM_SOLENOID_PINS = 4 + 1;
 
 // Pins 34, 36, 38, 40, 42 are used to drive existing sound card
-const int	SOUND_PIN_START = 44;
+const int	SOUND_PIN_START = 34;
 const int	NUM_SOUND_PINS = 1 + 3 + 1;
 
 // Pins 31, 33, 35, 37, 39, 41, 43, 45, 47, 49, 51, 53 (12 total) are for lights
@@ -47,7 +47,10 @@ const int	NUM_SOUND_PINS = 1 + 3 + 1;
 const int	LIGHT_PIN_START = 31;
 const int	NUM_LIGHT_PINS = 3 + 1 + 8;
 
-// Pin 23, 25, 27, 29 are not used
+// Pins 23, 25, 27 are used for test switches
+const int       TEST_PIN_START = 23;
+
+// Pin 29 is not used
 
 // Pins A0 .. A10 are used for switches
 const int	SWITCH_PIN_START = A0;
@@ -86,6 +89,37 @@ const int RESET_DOWN_CYCLES = 10;
 /********************************************************************************/
 
 extern unsigned long addTime(unsigned long,unsigned long);
+
+
+/********************************************************************************/
+/*										*/
+/*	Definitions for handliogn reset 					*/
+/*										*/
+/********************************************************************************/
+
+enum rst_reason {
+   REASON_DEFAULT_RST		   = 0,
+   REASON_WDT_RST		   = 1,
+   REASON_EXCEPTION_RST    = 2,
+   REASON_SOFT_WDT_RST	   = 3,
+   REASON_SOFT_RESTART	   = 4,
+   REASON_DEEP_SLEEP_AWAKE = 5,
+   REASON_EXT_SYS_RST	   = 6
+};
+
+typedef unsigned long uint32;
+typedef byte uint8;
+typedef unsigned short uint16;
+
+struct rst_info{
+   uint32 reason;
+   uint32 exccause;
+   uint32 epc1;
+   uint32 epc2;
+   uint32 epc3;
+   uint32 excvaddr;
+   uint32 depc;
+};
 
 
 
