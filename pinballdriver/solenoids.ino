@@ -127,11 +127,10 @@ static void turnOnSolenoid()
    int which = solenoid_queue[solenoid_start] + FIRST_SOLENOID;
    solenoid_start = (solenoid_start + 1) % NUM_SOLENOID;
    int bit = 1 << which;
-
-   digitalWrite(SOLENOID_PIN_SELECT0,((which & 0x1) != 0) ? HIGH : LOW);
-   digitalWrite(SOLENOID_PIN_SELECT1,((which & 0x2) != 0) ? HIGH : LOW);
-   digitalWrite(SOLENOID_PIN_SELECT2,((which & 0x4) != 0) ? HIGH : LOW);
-   digitalWrite(SOLENOID_PIN_SELECT3,((which & 0x8) != 0) ? HIGH : LOW);
+   writeBit(SOLENOID_PIN_SELECT0,which,0);
+   writeBit(SOLENOID_PIN_SELECT1,which,1);
+   writeBit(SOLENOID_PIN_SELECT2,which,2);
+   writeBit(SOLENOID_PIN_SELECT3,which,3);
    digitalWrite(SOLENOID_PIN_DRIVER,SOLENOID_DRIVER_ON);
 
    solenoid_queued &= ~bit;

@@ -1,14 +1,14 @@
 /********************************************************************************/
-/*                                                                              */
-/*      lights.h -- definitions for the lights                                  */      
-/*                                                                              */
+/*										*/
+/*	lights.h -- definitions for the lights					*/
+/*										*/
 /********************************************************************************/
 
 
 /********************************************************************************/
-/*                                                                              */
-/*      Pin assignments                                                         */      
-/*                                                                              */
+/*										*/
+/*	Pin assignments 							*/
+/*										*/
 /********************************************************************************/
 
 const int LIGHT_PIN_SELECT0 = LIGHT_PIN_START + 22;
@@ -31,29 +31,29 @@ const int LIGHT_PIN_DRIVE7 = LIGHT_PIN_START + 0;
 
 
 /********************************************************************************/
-/*                                                                              */
-/*      Timing values                                                           */      
-/*                                                                              */
+/*										*/
+/*	Timing values								*/
+/*										*/
 /********************************************************************************/
 
-const int       NUM_LIGHT_ROWS = 8;
-const int       NUM_LIGHT_COLUMNS = 8;
-const int       NUM_LIGHTS = 64;
+const int	NUM_LIGHT_ROWS = 8;
+const int	NUM_LIGHT_COLUMNS = 8;
+const int	NUM_LIGHTS = 64;
 
-const int       LIGHT_NUM_ENABLED_ROW = 3;
+const int	LIGHT_NUM_ENABLED_ROW = 3;
 
-const long      LIGHT_PULSE_TIME = 1000;
-const long      LIGHT_CYCLE_TIME = 150000;         // 8/3 * this yields blink time
+const long	LIGHT_PULSE_TIME = 1000;
+const long	LIGHT_CYCLE_TIME = 150000;	   // 8/3 * this yields blink time
 
-const int       LIGHT_DRIVE_ON = HIGH;
-const int       LIGHT_DRIVE_OFF = LOW;
+const int	LIGHT_DRIVE_ON = HIGH;
+const int	LIGHT_DRIVE_OFF = LOW;
 
 
 
 /********************************************************************************/
-/*                                                                              */
-/*      entry points                                                            */      
-/*                                                                              */
+/*										*/
+/*	entry points								*/
+/*										*/
 /********************************************************************************/
 
 extern void setLight(int,bool);

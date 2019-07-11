@@ -193,9 +193,9 @@ static void updatePulse()
    int base = row * 8;
    digitalWrite(LIGHT_PIN_ENABLE,LOW);
 
-   digitalWrite(LIGHT_PIN_SELECT0,((row & 1) != 0? HIGH : LOW));
-   digitalWrite(LIGHT_PIN_SELECT1,((row & 2) != 0? HIGH : LOW));
-   digitalWrite(LIGHT_PIN_SELECT2,((row & 4) != 0? HIGH : LOW));
+   writeBit(LIGHT_PIN_SELECT0,row,0);
+   writeBit(LIGHT_PIN_SELECT1,row,1);
+   writeBit(LIGHT_PIN_SELECT2,row,2);
 
    for (int j = 0; j < NUM_LIGHT_COLUMNS; ++j) {
       if (lights[base+j]) digitalWrite(LIGHT_PIN_DRIVE(j),LIGHT_DRIVE_ON);

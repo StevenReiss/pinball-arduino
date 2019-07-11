@@ -166,9 +166,9 @@ static void turnOnSound()
       digitalWrite(SOUND_PIN_ALTERNATE_SET,LOW);
     }
 
-   digitalWrite(SOUND_PIN_SELECT0,((which & 0x1) != 0) ? HIGH : LOW);
-   digitalWrite(SOUND_PIN_SELECT1,((which & 0x2) != 0) ? HIGH : LOW);
-   digitalWrite(SOUND_PIN_SELECT2,((which & 0x4) != 0) ? HIGH : LOW);
+   writeBit(SOUND_PIN_SELECT0,which,0);
+   writeBit(SOUND_PIN_SELECT1,which,1);
+   writeBit(SOUND_PIN_SELECT2,which,2);
    digitalWrite(SOUND_PIN_DRIVER,HIGH);
 
    sound_on = true;

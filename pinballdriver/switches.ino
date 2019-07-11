@@ -148,9 +148,9 @@ void switchesReset()
 static void handleSelect()
 {
    switch_row = (switch_row + 1) % NUM_SWITCH_ROWS;
-   digitalWrite(SWITCH_PIN_SELECT0,((switch_row & 1) != 0 ? HIGH : LOW));
-   digitalWrite(SWITCH_PIN_SELECT1,((switch_row & 2) != 0 ? HIGH : LOW));
-   digitalWrite(SWITCH_PIN_SELECT2,((switch_row & 4) != 0 ? HIGH : LOW));
+   writeBit(SWITCH_PIN_SELECT0,switch_row,0);
+   writeBit(SWITCH_PIN_SELECT1,switch_row,1);
+   writeBit(SWITCH_PIN_SELECT2,switch_row,2);
 }
 
 

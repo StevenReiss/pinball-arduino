@@ -29,6 +29,10 @@ static int mem_protect;
 static int auto_manual;
 static int advance_btn;
 
+static long total_time;
+static long num_times;
+static long last_time;
+
 
 static bool test_state;
 static int display_counter;
@@ -57,6 +61,10 @@ void testingSetup()
    auto_manual = HIGH;
    advance_btn = HIGH;
 
+   last_time = 0;
+   total_time = 0;
+   num_times = 0;
+
    pinMode(TEST_PIN_MEM_PROTECT,INPUT_PULLUP);
    pinMode(TEST_PIN_AUTO_MANUAL,INPUT_PULLUP);
    pinMode(TEST_PIN_ADVANCE,INPUT_PULLUP);
@@ -84,6 +92,8 @@ static void testingStart()
    for (int i = 0; i < NUM_SCORE_DISPLAY; ++i) blankDisplay(i);
    blankDisplayLeft();
    blankDisplayRight();
+
+
 }
 
 
@@ -114,7 +124,18 @@ void testingWrap()
 
 void testingUpdate(unsigned long now)
 {
-   if (first_time) testingStart();
+   if (first_time) {
+      testingStart();
+      last_time = now;
+    }
+   else if (num_times < 100000) {
+      total_time += now - last_time;
+      ++num_times;
+      if (num_times == 100000) {
+	 Serial.print("TESTING AVG CYCLE TIME = ");
+	 Serial.println(total_time / num_times);
+       }
+    }
 
    if (now >= next_test_update) {
       handleSwitchChanges(4,testSwitchOff,testSwitchOn);
@@ -187,7 +208,8 @@ static void checkTestSwitches()
 static void nextTestMode()
 {
    next_test_check = 0;
-   if (next_display_count == 0) next_display_count = addTime(micros(),TEST_DISPLAY_COUNT_INTERVAL);
+   if (next_display_count == 0)
+      next_display_count = addTime(micros(),TEST_DISPLAY_COUNT_INTERVAL);
 
    switch (test_mode) {
       case TEST_IDLE :

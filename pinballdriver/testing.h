@@ -1,10 +1,13 @@
 /********************************************************************************/
-/*                                                                              */
-/*      Constants for Testing                                                   */
-/*                                                                              */
+/*										*/
+/*	Constants for Testing							*/
+/*										*/
 /********************************************************************************/
 
-enum TestMode { TEST_IDLE, TEST_SOLENOIDS, TEST_SOUNDS, TEST_LIGHTS, TEST_SPECIALS };
+enum TestMode {
+   TEST_IDLE, TEST_SOLENOIDS, TEST_SOUNDS, TEST_LIGHTS, TEST_SPECIALS
+};
+
 
 const unsigned long TEST_CHECK_TIME = 10000;
 
@@ -23,15 +26,15 @@ const int TEST_BOUNCE = 2;
 
 
 /********************************************************************************/
-/*                                                                              */
-/*      Pin assignments for Testing                                             */
-/*                                                                              */
+/*										*/
+/*	Pin assignments for Testing						*/
+/*										*/
 /********************************************************************************/
 
-const int       TEST_PIN_BUTTON = TEST_PIN;
-const int       TEST_PIN_MEM_PROTECT = TEST_PIN_START;
-const int       TEST_PIN_AUTO_MANUAL = TEST_PIN_START + 2;
-const int       TEST_PIN_ADVANCE = TEST_PIN_START + 4;
+const int	TEST_PIN_BUTTON = TEST_PIN;
+const int	TEST_PIN_MEM_PROTECT = TEST_PIN_START;
+const int	TEST_PIN_AUTO_MANUAL = TEST_PIN_START + 2;
+const int	TEST_PIN_ADVANCE = TEST_PIN_START + 4;
 
 
 
