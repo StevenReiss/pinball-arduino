@@ -41,7 +41,7 @@ const int	NUM_SWITCH_ROWS = 8;
 const int	NUM_SWITCH_COLS = 8;
 const int	NUM_SWITCH = NUM_SWITCH_ROWS*NUM_SWITCH_COLS;
 
-const long	SWITCH_CHECK_TIME = 5000;
+const long	SWITCH_CHECK_TIME = 500000l;   
 const long	SWITCH_DELAY_TIME = 0;		// non-zero to read later
 const int	SWITCH_BOUNCE_CYCLES = 2;	// number of times before report
 
