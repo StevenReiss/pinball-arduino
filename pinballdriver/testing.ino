@@ -32,6 +32,7 @@ static int advance_btn;
 static long total_time;
 static long num_times;
 static long last_time;
+static long num_total;
 
 
 static bool test_state;
@@ -64,6 +65,7 @@ void testingSetup()
    last_time = 0;
    total_time = 0;
    num_times = 0;
+   num_total = 0;
 
    pinMode(TEST_PIN_MEM_PROTECT,INPUT_PULLUP);
    pinMode(TEST_PIN_AUTO_MANUAL,INPUT_PULLUP);
@@ -128,13 +130,20 @@ void testingUpdate(unsigned long now)
       testingStart();
       last_time = now;
     }
-   else if (num_times < 100000) {
-      total_time += now - last_time;
+     else if (num_times < 100000) {
       ++num_times;
-      if (num_times == 100000) {
-	 Serial.print("TESTING AVG CYCLE TIME = ");
-	 Serial.println(total_time / num_times);
-       }
+      if (num_times % 1000 == 0) {
+        total_time += now - last_time;
+        ++num_total;
+	       Serial.print("TESTING CYCLE TIME = ");
+	       Serial.println(now - last_time);
+      }
+      last_time = now;
+    }
+    else if (num_times == 100000) {
+      ++num_times;
+      Serial.print("TESTING AVG CYCLE TIME = ");
+      Serial.println(total_time / num_total);
     }
 
    if (now >= next_test_update) {
@@ -177,9 +186,14 @@ static void checkTestSwitches()
    else if (switch_down <= TEST_BOUNCE) {
       switch_down = 0;
     }
-   else {
-      Serial.println("TESTING NEXT MODE");
+   else if (switch_down > 0) {
       nextTestMode();
+      Serial.print("TESTING NEXT MODE ");
+      Serial.print(test_mode);
+      Serial.print(" ");
+      Serial.println(test_counter);
+
+      switch_down = 0;
     }
 
    int sts1 = digitalRead(TEST_PIN_MEM_PROTECT);
@@ -208,7 +222,6 @@ static void checkTestSwitches()
 
 static void nextTestMode()
 {
-   next_test_check = 0;
    if (next_display_count == 0)
       next_display_count = addTime(micros(),TEST_DISPLAY_COUNT_INTERVAL);
 
@@ -233,6 +246,7 @@ static void nextTestMode()
 	 break;
     }
 
+   next_test_check = 0;
    switch (last_test_mode) {
       default :
       case TEST_IDLE :
