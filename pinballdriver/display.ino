@@ -24,6 +24,8 @@ static int	display_right;
 static byte display_right_digits[8];
 static byte display_right_digit_count;
 
+static bool need_digits[NUM_DISPLAY];
+
 static unsigned long bit_values[NUM_DISPLAY][3];
 
 static unsigned long next_display_update;
@@ -45,7 +47,7 @@ void setDisplay(int i,long value)
 {
    if (value >= MAX_VALUE) value = value % MAX_VALUE;
    display_value[i] = value;
-   getDisplayDigits(i);
+   need_digits[i] = true;
 }
 
 
@@ -53,7 +55,7 @@ void setDisplayLeft(int i)
 {
    if (i >= MAX_HALF_VALUE) i = i % MAX_HALF_VALUE;
    display_left = i;
-   getSplitDisplayDigits();
+   need_digits[DISPLAY_SPLIT] = true;
 }
 
 
@@ -61,28 +63,28 @@ void setDisplayRight(int i)
 {
    if (i >= MAX_HALF_VALUE) i = i % MAX_HALF_VALUE;
    display_right = i;
-   getSplitDisplayDigits();
+   need_digits[DISPLAY_SPLIT] = true;
 }
 
 
 void blankDisplay(int i)
 {
    display_value[i] = -1;
-   getDisplayDigits(i);
+   need_digits[i] = true;
 }
 
 
 void blankDisplayLeft()
 {
    display_left = -1;
-   getSplitDisplayDigits();
+   need_digits[DISPLAY_SPLIT] = true;
 }
 
 
 void blankDisplayRight()
 {
    display_right = -1;
-   getSplitDisplayDigits();
+   need_digits[DISPLAY_SPLIT] = true;
 }
 
 
@@ -116,6 +118,7 @@ void displaySetup()
    digitalWrite(DISPLAY_DIGIT3_PIN,DIGIT_HIDE);
 
    for (int i = 0; i < NUM_DISPLAY; ++i) {
+      need_digits[i] = true;
       blankDisplay(i);
     }
    blankDisplayLeft();
@@ -191,6 +194,10 @@ void updateTask()
 {
    for (int i = 0; i < NUM_DISPLAY; ++i) {
       if (i == DISPLAY_SPLIT) continue;
+      if (need_digits[i]) {
+	 getDisplayDigits(i);
+	 need_digits[i] = false;
+       }
       long v = display_value[i];
       if (v < 0) {
 	 bit_values[i][0] = 0;
@@ -210,6 +217,11 @@ void updateTask()
 	  }
 	 bit_values[i][k] = (v1 << 8) | v0;
        }
+    }
+
+   if (need_digits[DISPLAY_SPLIT]) {
+      getSplitDisplayDigits();
+      need_digits[DISPLAY_SPLIT] = false;
     }
 
    for (int k = 0; k < 3; ++k) {
