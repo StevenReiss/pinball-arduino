@@ -241,10 +241,9 @@ void setTask()
    for (int j = 0; j < NUM_DISPLAY; ++j) {
       digitalWrite(DISPLAY_DATA_PIN,LOW);
       digitalWrite(DISPLAY_CLOCK_PIN,LOW);
-      digitalWrite(DISPLAY_CLOCK_MPX0_PIN,((j & 0x1) != 0 ? HIGH : LOW));
-      digitalWrite(DISPLAY_CLOCK_MPX1_PIN,((j & 0x2) != 0 ? HIGH : LOW));
-      digitalWrite(DISPLAY_CLOCK_MPX2_PIN,((j & 0x4) != 0 ? HIGH : LOW));
-
+      writeBit(DISPLAY_CLOCK_MPX0_PIN,j,0);
+      writeBit(DISPLAY_CLOCK_MPX1_PIN,j,1);
+      writeBit(DISPLAY_CLOCK_MPX2_PIN,j,2);
       long val = bit_values[j][idx];
       for (int i = 15; i >= 0; --i) {
 	 digitalWrite(DISPLAY_CLOCK_PIN,LOW);

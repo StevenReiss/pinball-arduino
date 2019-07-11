@@ -25,7 +25,7 @@ const int SWITCH_PIN_SELECT0 = SWITCH_PIN_START + 8;
 const int SWITCH_PIN_SELECT1 = SWITCH_PIN_START + 9;
 const int SWITCH_PIN_SELECT2 = SWITCH_PIN_START + 10;
 
-#define SWITCH_PIN_READ(i)      (SWITCH_PIN_READ0 + i)
+#define SWITCH_PIN_READ(i)	(SWITCH_PIN_READ0 + i)
 
 
 
@@ -42,9 +42,8 @@ const int	NUM_SWITCH_COLS = 8;
 const int	NUM_SWITCH = NUM_SWITCH_ROWS*NUM_SWITCH_COLS;
 
 const long	SWITCH_CHECK_TIME = 5000;
-const long	SWITCH_DELAY_TIME = 10; 	// delay after setting selectors before reading
-
-const int	SWITCH_BOUNCE_CYCLES = 2;	// number of consistent times before report
+const long	SWITCH_DELAY_TIME = 0;		// non-zero to read later
+const int	SWITCH_BOUNCE_CYCLES = 2;	// number of times before report
 
 const int	SWITCH_ON = LOW;
 

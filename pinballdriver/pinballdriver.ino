@@ -196,6 +196,14 @@ unsigned long addTime(unsigned long t0,unsigned long t1)
 }
 
 
+void writeBit(int pin,int word,int bit)
+{
+    int v = LOW;
+    if (bitRead(word,bit)) v = HIGH;
+    digitalWrite(pin,v);
+}
+
+
 
 /********************************************************************************/
 /*										*/
