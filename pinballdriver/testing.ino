@@ -4,11 +4,7 @@
 /*										*/
 /********************************************************************************/
 
-// need to add light testing -- turn on all lights?, random lights as logic
-//    light patterns
 
-// use Serial.available and Serial.readString or parseInt to simulate test
-//    switch
 
 
 /********************************************************************************/
@@ -29,10 +25,10 @@ static int mem_protect;
 static int auto_manual;
 static int advance_btn;
 
-static long total_time;
-static long num_times;
-static long last_time;
-static long num_total;
+static long testing_total_time;
+static long testing_num_times;
+static long testing_last_time;
+static long testing_num_total;
 
 
 static bool test_state;
@@ -62,10 +58,10 @@ void testingSetup()
    auto_manual = HIGH;
    advance_btn = HIGH;
 
-   last_time = 0;
-   total_time = 0;
-   num_times = 0;
-   num_total = 0;
+   testing_last_time = 0;
+   testing_total_time = 0;
+   testing_num_times = 0;
+   testing_num_total = 0;
 
    pinMode(TEST_PIN_MEM_PROTECT,INPUT_PULLUP);
    pinMode(TEST_PIN_AUTO_MANUAL,INPUT_PULLUP);
@@ -128,22 +124,22 @@ void testingUpdate(unsigned long now)
 {
    if (first_time) {
       testingStart();
-      last_time = now;
+      testing_last_time = now;
     }
-     else if (num_times < 100000) {
-      ++num_times;
-      if (num_times % 1000 == 0) {
-        total_time += now - last_time;
-        ++num_total;
-	       Serial.print("TESTING CYCLE TIME = ");
-	       Serial.println(now - last_time);
-      }
-      last_time = now;
+   else if (testing_num_times < 100000) {
+      ++testing_num_times;
+      if (testing_num_times % 1000 == 0) {
+	 testing_total_time += now - testing_last_time;
+	 ++testing_num_total;
+	 Serial.print("TESTING CYCLE TIME = ");
+	 Serial.println(now - testing_last_time);
+       }
+      testing_last_time = now;
     }
-    else if (num_times == 100000) {
-      ++num_times;
+   else if (testing_num_times == 100000) {
+      ++testing_num_times;
       Serial.print("TESTING AVG CYCLE TIME = ");
-      Serial.println(total_time / num_total);
+      Serial.println(testing_total_time / testing_num_total);
     }
 
    if (now >= next_test_update) {
@@ -440,8 +436,9 @@ static void displayCount()
    setDisplayRight(vr);
 
    ++display_counter;
-
 }
+
+
 
 
 /********************************************************************************/

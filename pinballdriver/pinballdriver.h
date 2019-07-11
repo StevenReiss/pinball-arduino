@@ -48,7 +48,7 @@ const int	LIGHT_PIN_START = 31;
 const int	NUM_LIGHT_PINS = 3 + 1 + 8;
 
 // Pins 23, 25, 27 are used for test switches
-const int       TEST_PIN_START = 23;
+const int	TEST_PIN_START = 23;
 
 // Pin 29 is not used
 
