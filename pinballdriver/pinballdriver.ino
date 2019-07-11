@@ -163,6 +163,13 @@ static void checkControlSwitches()
 	 reset();
        }
       else test_down = 0;
+//      Serial.print("TEST CHECK ");
+//      Serial.print(sts);
+//      Serial.print(" ");
+//      Serial.print(test_down);
+//      Serial.print(" ");
+//      Serial.println(is_testing);
+      
     }
    int sts = digitalRead(SOFT_RESET_PIN);
    if (sts == LOW) ++reset_down;
@@ -229,7 +236,10 @@ static void watchdogReset()
 
 ISR(TIMER3_COMPA_vect)
 {
-   if (watchdog_counter == 0) reset();
+   if (watchdog_counter == 0) {
+      // reset();
+      Serial.println("WATCHDOG RESET");
+   }
 
    if (watchdog_counter > 0) --watchdog_counter;
 }
@@ -269,5 +279,3 @@ void __wrap_system_restart_local()
 
 
 /* end of pinballdriver.ino */
-
-

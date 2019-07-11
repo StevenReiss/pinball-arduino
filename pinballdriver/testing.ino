@@ -157,6 +157,7 @@ static void checkTestSwitches()
       switch_down = 0;
     }
    else {
+      Serial.println("TESTING NEXT MODE");
       nextTestMode();
     }
 
