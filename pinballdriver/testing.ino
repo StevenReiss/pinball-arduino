@@ -126,7 +126,7 @@ void testingUpdate(unsigned long now)
       testingStart();
       testing_last_time = now;
     }
-   else if (testing_num_times < 100000) {
+   else if (testing_num_times < 10000) {
       ++testing_num_times;
       if (testing_num_times % 1000 == 0) {
 	 testing_total_time += now - testing_last_time;
@@ -136,7 +136,7 @@ void testingUpdate(unsigned long now)
        }
       testing_last_time = now;
     }
-   else if (testing_num_times == 100000) {
+   else if (testing_num_times == 10000) {
       ++testing_num_times;
       Serial.print("TESTING AVG CYCLE TIME = ");
       Serial.println(testing_total_time / testing_num_total);

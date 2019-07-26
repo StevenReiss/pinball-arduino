@@ -36,7 +36,7 @@ bool getSwitch(int ino)
 }
 
 
-void handleSwitchChanges(int max,SwitchCallback on,SwitchCallback off)
+void handleSwitchChanges(int max,SwitchCallback off,SwitchCallback on)
 {
    int ct = 0;
    for (int i = 0; i < NUM_SWITCH; ++i) {
@@ -157,18 +157,6 @@ static void handleRead()
       int v = digitalRead(SWITCH_PIN_READ(i));
       bool val = (v == SWITCH_ON ? 1 : 0);
       int swno = base*8 + i;
-      if (val) {
-        Serial.print("DETECT SWITCH ON ");
-        Serial.print(i);
-        Serial.print(" ");
-        Serial.print(base);
-        Serial.print(" ");
-        Serial.print(swno);
-        Serial.print(" ");
-        Serial.print(switch_value[swno]);
-        Serial.print(" ");
-        Serial.println(switch_count[swno]);
-      }
        if (switch_value[swno] == val) {
 	      if (switch_count[swno] != SWITCH_KNOWN)
 	         if (switch_count[swno] < SWITCH_BOUNCE_CYCLES) ++switch_count[swno];
