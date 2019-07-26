@@ -20,6 +20,7 @@ static unsigned long	next_special_on;
 static int		cur_special;		// what we are looking at
 static int		special_switch; 	// which switch is on
 static bool		special_disable;	// disable flag
+static int              test_switch;
 
 
 
@@ -45,6 +46,11 @@ void specialEnable()
    digitalWrite(SPECIAL_PIN_FLIPPER_ENABLE,HIGH);
 }
 
+
+void triggerSpecial(int id)
+{
+   test_switch = id;
+}
 
 
 
@@ -74,6 +80,7 @@ void specialSetup()
    special_disable = true;
    cur_special = 0;
    special_switch = NO_SPECIAL;
+   test_switch = -1;
 
    digitalWrite(SPECIAL_PIN_OUT_SELECT0,LOW);
    digitalWrite(SPECIAL_PIN_OUT_SELECT1,LOW);
@@ -119,6 +126,7 @@ void specialUpdate(unsigned long now)
       triggerSpecialSolenoid(now);
     }
    if (next_special_off > 0 && now >= next_special_off) {
+      test_switch = -1;
       digitalWrite(SPECIAL_PIN_DRIVER,LOW);
       next_special_on = addTime(now,SPECIAL_OFF_TIME);
     }
@@ -158,8 +166,14 @@ static void checkSwitch(unsigned long now)
 
    for (int i = 0; i < NUM_SPECIAL; ++i) {
       int sts = digitalRead(SPECIAL_PIN_IN(cur_special));
+      if (i == test_switch) sts = SPECIAL_ON;
+     
       if (sts == SPECIAL_ON) {
 	 if (special_switch != cur_special) {
+            if (is_testing && test_switch < 0) {
+               Serial.print("DETECT SPECIAL ");
+               Serial.println(i);
+             }
 	    special_switch = cur_special;
 	    triggerSpecialSolenoid(now);
 	  }

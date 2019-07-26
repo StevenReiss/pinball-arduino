@@ -450,12 +450,24 @@ static void displayCount()
 static void startSpecialTest()
 {
    test_mode = TEST_SPECIALS;
+   test_counter = 0;
+   test_state = false;
+   next_test_check = addTime(micros(),TEST_START_INTERVAL);
 }
 
 
 
 static void nextSpecialTest()
 {
+   if (test_counter > NUM_SPECIAL) {
+      setTestIdle();
+    }
+   else {
+      Serial.print("TRIGGER SPECIAL ");
+      Serial.println(test_counter);
+      triggerSpecial(test_counter);
+      next_test_check = addTime(micros(),TEST_SPECIAL_INTERVAL);
+    }
    setTestIdle();
 }
 
