@@ -39,8 +39,8 @@ const long SOUND_ON_TIME = 100;
 const long SOUND_OFF_TIME = 0;
 const long SOUND_CHECK_TIME = 5000;
 
-const int SOUND_OFF = HIGH;
-const int SOUND_ON = LOW;
+const int SOUND_OFF = LOW;
+const int SOUND_ON = HIGH;
 
 const int SOUND_PLAY_TIMER = 1; 	// pins 11 and 12
 
@@ -63,5 +63,3 @@ extern void soundsUpdate(unsigned long);
 
 
 /* end of sounds.h */
-
-
