@@ -108,8 +108,8 @@ void displaySetup()
    pinMode(DISPLAY_DIGIT3_PIN,OUTPUT);
 
    digitalWrite(DISPLAY_DATA_PIN,LOW);
-   digitalWrite(DISPLAY_CLOCK_PIN,LOW);
-   digitalWrite(DISPLAY_LATCH_PIN,LOW);
+   digitalWrite(DISPLAY_CLOCK_PIN,HIGH);
+   digitalWrite(DISPLAY_LATCH_PIN,HIGH);
    digitalWrite(DISPLAY_CLOCK_MPX0_PIN,LOW);
    digitalWrite(DISPLAY_CLOCK_MPX1_PIN,LOW);
    digitalWrite(DISPLAY_CLOCK_MPX2_PIN,LOW);
@@ -180,6 +180,8 @@ void displayReset()
    digitalWrite(DISPLAY_DIGIT1_PIN,DIGIT_HIDE);
    digitalWrite(DISPLAY_DIGIT2_PIN,DIGIT_HIDE);
    digitalWrite(DISPLAY_DIGIT3_PIN,DIGIT_HIDE);
+   digitalWrite(DISPLAY_CLOCK_PIN,HIGH);
+   digitalWrite(DISPLAY_LATCH_PIN,HIGH);
 }
 
 
@@ -289,18 +291,17 @@ void setTask()
       if (set_count >= 3) set_count = 0;
     }
    int idx = set_count;
-   int j = work_display;
+   int j = work_display + 1;
 
    int oidx = idx+2;
    if (oidx >= 3) oidx = oidx-3;
 
-   digitalWrite(DISPLAY_LATCH_PIN,0);
-
    digitalWrite(DISPLAY_DATA_PIN,LOW);
-   digitalWrite(DISPLAY_CLOCK_PIN,LOW);
    writeBit(DISPLAY_CLOCK_MPX0_PIN,j,0);
    writeBit(DISPLAY_CLOCK_MPX1_PIN,j,1);
    writeBit(DISPLAY_CLOCK_MPX2_PIN,j,2);
+   digitalWrite(DISPLAY_LATCH_PIN,LOW);
+
    long val = bit_values[j][idx];
    for (int i = 15; i >= 0; --i) {
       digitalWrite(DISPLAY_CLOCK_PIN,LOW);
