@@ -65,16 +65,16 @@ const int DISPLAY_SPLIT = 4;
 /********************************************************************************/
 
 const unsigned int bits [] = {
-   0xd7,	   // 0
-   0x50,	   // 1
-   0x67,	   // 2
-   0x75,	   // 3
-   0xf0,	   // 4
-   0xb5,	   // 5
+   0xf5,	   // 0
+   0x44,	   // 1
+   0x73,	   // 2
+   0x57,	   // 3
+   0xc6,	   // 4
+   0x97,	   // 5
    0xb7,	   // 6
-   0x51,	   // 7
+   0x45,	   // 7
    0xf7,	   // 8
-   0xf1,	   // 9
+   0xc7,	   // 9
    0x00 	   // blank
 };
 
@@ -103,4 +103,3 @@ extern void blankDisplayRight(int i);
 
 
 /* end of display.h */
-

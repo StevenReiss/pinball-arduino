@@ -429,12 +429,14 @@ static void displayCount()
       setDisplay(i,v);
     }
 
-   int vl = (display_counter/1000) % 100;
+   int vl = (display_counter) % 100;
    int vr = (vl + 11) % 100;
 
    setDisplayLeft(vl);
    setDisplayRight(vr);
-
+//     setDisplayLeft(67);
+//     setDisplayRight(89);
+     
    ++display_counter;
 }
 
