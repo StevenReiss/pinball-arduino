@@ -12,14 +12,15 @@
 /********************************************************************************/
 
 const int DISPLAY_DATA_PIN = DISPLAY_PIN_START;
+const int DISPLAY_DATA2_PIN = DISPLAY_PIN_START2;
 const int DISPLAY_CLOCK_PIN = DISPLAY_PIN_START+1;
 const int DISPLAY_CLOCK_MPX0_PIN = DISPLAY_PIN_START+2;
 const int DISPLAY_CLOCK_MPX1_PIN = DISPLAY_PIN_START+3;
 const int DISPLAY_CLOCK_MPX2_PIN = DISPLAY_PIN_START+4;
-const int DISPLAY_LATCH_PIN = DISPLAY_PIN_START2;
-const int DISPLAY_DIGIT1_PIN = DISPLAY_PIN_START2 + 2;
-const int DISPLAY_DIGIT2_PIN = DISPLAY_PIN_START2 + 4;
-const int DISPLAY_DIGIT3_PIN = DISPLAY_PIN_START2 + 6;
+const int DISPLAY_LATCH_PIN = DISPLAY_PIN_START2+ 2;
+const int DISPLAY_DIGIT1_PIN = DISPLAY_PIN_START2 + 4;
+const int DISPLAY_DIGIT2_PIN = DISPLAY_PIN_START2 + 6;
+const int DISPLAY_DIGIT3_PIN = DISPLAY_PIN_START2 + 8;
 
 #define DISPLAY_DIGIT_PIN(i)	(DISPLAY_DIGIT1_PIN + i*2)
 
@@ -31,7 +32,7 @@ const int DISPLAY_DIGIT3_PIN = DISPLAY_PIN_START2 + 6;
 /*										*/
 /********************************************************************************/
 
-const long DISPLAY_SET_INCR = 4000/5;	    // use to keep a digit on
+const long DISPLAY_SET_INCR = 4000;	    // use to keep a digit on
 					    //	 cycle among displays
 
 const long DISPLAY_UPDATE_INCR = 100000;    // update digit tables every k ms

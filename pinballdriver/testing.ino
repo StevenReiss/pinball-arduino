@@ -434,9 +434,9 @@ static void displayCount()
 
    setDisplayLeft(vl);
    setDisplayRight(vr);
-//     setDisplayLeft(67);
-//     setDisplayRight(89);
-     
+   //	  setDisplayLeft(67);
+   //	  setDisplayRight(89);
+
    ++display_counter;
 }
 

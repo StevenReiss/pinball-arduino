@@ -116,8 +116,8 @@ void switchesUpdate(unsigned long now)
 {
    if (next_switch_read == 0 && now >= next_switch_select) {
       handleSelect();
-	 next_switch_read = addTime(now,SWITCH_DELAY_TIME);
-	 next_switch_select = addTime(now,SWITCH_CHECK_TIME);
+      next_switch_read = addTime(now,SWITCH_DELAY_TIME);
+      next_switch_select = addTime(now,SWITCH_CHECK_TIME);
     }
    if (next_switch_read > 0 && now >= next_switch_read) {
       handleRead();
@@ -146,7 +146,7 @@ static void handleSelect()
    writeBit(SWITCH_PIN_SELECT0,switch_row,0);
    writeBit(SWITCH_PIN_SELECT1,switch_row,1);
    writeBit(SWITCH_PIN_SELECT2,switch_row,2);
- 
+
 }
 
 
@@ -157,9 +157,9 @@ static void handleRead()
       int v = digitalRead(SWITCH_PIN_READ(i));
       bool val = (v == SWITCH_ON ? 1 : 0);
       int swno = base*8 + i;
-       if (switch_value[swno] == val) {
-	      if (switch_count[swno] != SWITCH_KNOWN)
-	         if (switch_count[swno] < SWITCH_BOUNCE_CYCLES) ++switch_count[swno];
+      if (switch_value[swno] == val) {
+	 if (switch_count[swno] != SWITCH_KNOWN)
+	    if (switch_count[swno] < SWITCH_BOUNCE_CYCLES) ++switch_count[swno];
        }
       else {
 	 switch_value[swno] = val;

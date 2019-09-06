@@ -56,10 +56,10 @@ const int	TEST_PIN_START = 23;
 const int	SWITCH_PIN_START = A0;
 const int	NUM_SWITCH_PINS = 8 + 3;
 
-// Pins A11 .. A15 and 46, 48, 50, 52 are used for the display
+// Pins A11 .. A15 and 44, 46, 48, 50, 52 are used for the display
 const int	DISPLAY_PIN_START = A11;
-const int	DISPLAY_PIN_START2 = 46;
-const int	NUM_DISPLAY_PINS = 1 + 1 + 1 + 3 + 3;
+const int	DISPLAY_PIN_START2 = 44;
+const int	NUM_DISPLAY_PINS = 2 + 1 + 1 + 3 + 3;
 
 
 
