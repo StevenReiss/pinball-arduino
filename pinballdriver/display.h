@@ -48,8 +48,8 @@ const long DISPLAY_UPDATE_INCR = 100000;    // update digit tables every k ms
 const long MAX_VALUE = 1000000;
 const int MAX_HALF_VALUE = 1000;
 
-const int DIGIT_SHOW = LOW;
-const int DIGIT_HIDE = HIGH;
+const int DIGIT_SHOW = HIGH;
+const int DIGIT_HIDE = LOW;
 
 const int NUM_DISPLAY = 5;
 const int NUM_SCORE_DISPLAY= 4;
