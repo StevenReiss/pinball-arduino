@@ -98,6 +98,7 @@ void blankDisplayRight()
 void displaySetup()
 {
    pinMode(DISPLAY_DATA_PIN,OUTPUT);
+   pinMode(DISPLAY_DATA2_PIN,OUTPUT);
    pinMode(DISPLAY_CLOCK_PIN,OUTPUT);
    pinMode(DISPLAY_CLOCK_MPX0_PIN,OUTPUT);
    pinMode(DISPLAY_CLOCK_MPX1_PIN,OUTPUT);
@@ -108,6 +109,7 @@ void displaySetup()
    pinMode(DISPLAY_DIGIT3_PIN,OUTPUT);
 
    digitalWrite(DISPLAY_DATA_PIN,LOW);
+   digitalWrite(DISPLAY_DATA2_PIN,LOW);
    digitalWrite(DISPLAY_CLOCK_PIN,HIGH);
    digitalWrite(DISPLAY_LATCH_PIN,HIGH);
    digitalWrite(DISPLAY_CLOCK_MPX0_PIN,LOW);
@@ -182,6 +184,8 @@ void displayReset()
    digitalWrite(DISPLAY_DIGIT3_PIN,DIGIT_HIDE);
    digitalWrite(DISPLAY_CLOCK_PIN,HIGH);
    digitalWrite(DISPLAY_LATCH_PIN,HIGH);
+   digitalWrite(DISPLAY_DATA_PIN,LOW);
+   digitalWrite(DISPLAY_DATA2_PIN,LOW);
 }
 
 
@@ -322,7 +326,6 @@ void setTask()
 	 digitalWrite(DISPLAY_CLOCK_PIN,LOW);
 	 if ((val & bitv) != 0) digitalWrite(DISPLAY_DATA2_PIN,HIGH);
 	 else digitalWrite(DISPLAY_DATA2_PIN,LOW);
-   digitalWrite(44,LOW);
 	 bitv >>= 1;
 	 if ((val & lowv) != 0) digitalWrite(DISPLAY_DATA_PIN,HIGH);
 	 else digitalWrite(DISPLAY_DATA_PIN,LOW);
