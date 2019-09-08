@@ -299,6 +299,7 @@ void setTask()
    //	int t0 = micros();
 
    int idx = set_count++;
+   if (set_count >= 3) set_count = 0;
    int oidx = idx+2;
    if (oidx >= 3) oidx = oidx-3;
 
@@ -321,6 +322,7 @@ void setTask()
 	 digitalWrite(DISPLAY_CLOCK_PIN,LOW);
 	 if ((val & bitv) != 0) digitalWrite(DISPLAY_DATA2_PIN,HIGH);
 	 else digitalWrite(DISPLAY_DATA2_PIN,LOW);
+   digitalWrite(44,LOW);
 	 bitv >>= 1;
 	 if ((val & lowv) != 0) digitalWrite(DISPLAY_DATA_PIN,HIGH);
 	 else digitalWrite(DISPLAY_DATA_PIN,LOW);
