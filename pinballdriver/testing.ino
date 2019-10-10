@@ -156,6 +156,8 @@ void testingUpdate(unsigned long now)
       displayCount();
       next_display_count = addTime(now,TEST_DISPLAY_COUNT_INTERVAL);
     }
+
+   checkSerial();
 }
 
 
@@ -212,6 +214,41 @@ static void checkTestSwitches()
       Serial.print("TEST ADVANCE ");
       Serial.println(sts3);
     }
+}
+
+
+static void checkSerial()
+{
+   if (Serial.available() == 0) return;
+
+   int input = Serial.read();
+   switch (input) {
+     case ' ' :
+        nexttestMode();
+        break;
+     case 'i' :
+     case 'I' :
+        startTestIdle();
+        break;
+     case 's' :
+     case 'S' :
+        startSolenoidTest();
+        break;
+     case 'A' :
+     case 'a' :
+        startSoundTest();
+        break;
+     case 'l' :
+     case 'L' :
+        startLightTest();
+        break;
+     case 'p' :
+     case 'P' :
+        startSpecialTest();
+        break;
+     default :
+        break;
+   }
 }
 
 
