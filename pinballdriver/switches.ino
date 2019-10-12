@@ -82,7 +82,7 @@ void switchesSetup()
 
    for (int i = 0; i < NUM_SWITCH; ++i) {
       switch_value[i] = false;
-      switch_count[i] = SWITCH_KNOWN;
+      switch_count[i] = 0;		// get initial value of switches
     }
 
    next_switch_read = 0;
@@ -155,20 +155,21 @@ static void handleRead()
    int base = switch_row;
    for (int i = 0; i < NUM_SWITCH_ROWS; ++i) {
       int v = digitalRead(SWITCH_PIN_READ(i));
-      bool val = (v == SWITCH_ON ? 1 : 0);
+      bool val = (v == SWITCH_ON ? true : false);
       int swno = base*8 + i;
       if (switch_value[swno] == val) {
-	 if (switch_count[swno] != SWITCH_KNOWN)
+	 if (switch_count[swno] != SWITCH_KNOWN) {
 	    if (switch_count[swno] < SWITCH_BOUNCE_CYCLES) ++switch_count[swno];
+	  }
        }
       else {
-        Serial.print("SWITCH CHANGE ");
-        Serial.print(base);
-        Serial.print(" ");
-        Serial.print(i);
-        Serial.print(" ");
-        Serial.print(val);
-        Serial.println();
+	 Serial.print("SWITCH CHANGE ");
+	 Serial.print(base);
+	 Serial.print(" ");
+	 Serial.print(i);
+	 Serial.print(" ");
+	 Serial.print(val);
+	 Serial.println();
 	 switch_value[swno] = val;
 	 switch_count[swno] = 1;
        }
@@ -178,3 +179,15 @@ static void handleRead()
 
 
 /* end of switches.ino */
+
+
+
+
+
+
+
+
+
+
+
+
