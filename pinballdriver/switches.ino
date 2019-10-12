@@ -162,6 +162,13 @@ static void handleRead()
 	    if (switch_count[swno] < SWITCH_BOUNCE_CYCLES) ++switch_count[swno];
        }
       else {
+        Serial.print("SWITCH CHANGE ");
+        Serial.print(base);
+        Serial.print(" ");
+        Serial.print(i);
+        Serial.print(" ");
+        Serial.print(val);
+        Serial.println();
 	 switch_value[swno] = val;
 	 switch_count[swno] = 1;
        }

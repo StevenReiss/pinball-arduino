@@ -22,9 +22,9 @@ const int	NUM_SPECIAL_PINS = 6 + 3 + 1 + 1;
 
 // Pins 18 and 19 are not used
 
-// Pins 11, 12, 13 are reserver for audio output
+// Pins 11, 12  are reserver for audio output
 const int	SOUND_PLAY_PIN_START = 11;
-const int	NUM_SOUND_PLAY_PINS = 3;
+const int	NUM_SOUND_PLAY_PINS = 2;
 
 // Pins 14,15 are reserved for WIFI on Serial3
 

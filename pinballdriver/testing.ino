@@ -223,32 +223,32 @@ static void checkSerial()
 
    int input = Serial.read();
    switch (input) {
-     case ' ' :
-        nexttestMode();
-        break;
-     case 'i' :
-     case 'I' :
-        startTestIdle();
-        break;
-     case 's' :
-     case 'S' :
-        startSolenoidTest();
-        break;
-     case 'A' :
-     case 'a' :
-        startSoundTest();
-        break;
-     case 'l' :
-     case 'L' :
-        startLightTest();
-        break;
-     case 'p' :
-     case 'P' :
-        startSpecialTest();
-        break;
-     default :
-        break;
-   }
+      case ' ' :
+	 nextTestMode();
+	 break;
+      case 'i' :
+      case 'I' :
+	 setTestIdle();
+	 break;
+      case 's' :
+      case 'S' :
+	 startSolenoidTest();
+	 break;
+      case 'A' :
+      case 'a' :
+	 startSoundTest();
+	 break;
+      case 'l' :
+      case 'L' :
+	 startLightTest();
+	 break;
+      case 'p' :
+      case 'P' :
+	 startSpecialTest();
+	 break;
+      default :
+	 break;
+    }
 }
 
 

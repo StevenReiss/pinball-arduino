@@ -225,6 +225,15 @@ void updateTask()
        }
     }
 
+//   Serial.print(display_value[0]);
+//   Serial.print(" ");
+//   Serial.print(bit_values[0][0],BIN);
+//   Serial.print(" ");
+//   Serial.print(bit_values[0][1],BIN);
+//   Serial.print(" ");
+//   Serial.print(bit_values[0][2],BIN);
+//   Serial.println();
+     
    if (need_digits[DISPLAY_SPLIT]) {
       getSplitDisplayDigits();
       need_digits[DISPLAY_SPLIT] = false;
@@ -258,18 +267,6 @@ static void getSplitDisplayDigits()
 {
    display_left_digit_count = getDigits(display_left,display_left_digits);
    display_right_digit_count = getDigits(display_right,display_right_digits);
-   //	for (int i = 0; i < 3; ++i) {
-   //	 Serial.print(i);
-   //	 Serial.print(" ");
-   //	 Serial.print(display_left_digits[i]);
-   //	 Serial.print(" ");
-   //	 Serial.print(display_right_digits[i]);
-   //	 Serial.print(" ");
-   //	 Serial.print(display_left);
-   //	 Serial.print(" ");
-   //	 Serial.print(display_right);
-   //	 Serial.println();
-   //	}
 }
 
 
@@ -309,11 +306,13 @@ void setTask()
 
    digitalWrite(DISPLAY_DIGIT_PIN(oidx),DIGIT_HIDE);
    digitalWrite(DISPLAY_LATCH_PIN,LOW);
+   digitalWrite(DISPLAY_CLOCK_PIN,LOW);
 
    for (int disp = 0; disp < NUM_DISPLAY; ++disp) {
       int j = disp + 1;
 
-      digitalWrite(DISPLAY_DATA_PIN,LOW);
+//      digitalWrite(DISPLAY_DATA_PIN,LOW);
+//      digitalWrite(DISPLAY_DATA2_PIN,LOW);
       digitalWrite(DISPLAY_LATCH_PIN,LOW);
       writeBit(DISPLAY_CLOCK_MPX0_PIN,j,0);
       writeBit(DISPLAY_CLOCK_MPX1_PIN,j,1);
