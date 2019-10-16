@@ -17,7 +17,7 @@ static byte	switch_count[NUM_SWITCH];		 // # times at that value
 
 static unsigned long next_switch_read;
 static unsigned long next_switch_select;
-static int switch_row;
+static int switch_col;
 
 const byte SWITCH_KNOWN = 100;
 
@@ -82,12 +82,12 @@ void switchesSetup()
 
    for (int i = 0; i < NUM_SWITCH; ++i) {
       switch_value[i] = false;
-      switch_count[i] = 0;		// get initial value of switches
+      switch_count[i] = SWITCH_KNOWN;
     }
 
    next_switch_read = 0;
    next_switch_select = 0;
-   switch_row = 0;
+   switch_col = 0;
 }
 
 
@@ -142,34 +142,37 @@ void switchesReset()
 
 static void handleSelect()
 {
-   switch_row = (switch_row + 1) % NUM_SWITCH_ROWS;
-   writeBit(SWITCH_PIN_SELECT0,switch_row,0);
-   writeBit(SWITCH_PIN_SELECT1,switch_row,1);
-   writeBit(SWITCH_PIN_SELECT2,switch_row,2);
+   switch_col= (switch_col + 1) % NUM_SWITCH_COLS;
+   writeBit(SWITCH_PIN_SELECT0,switch_col,0);
+   writeBit(SWITCH_PIN_SELECT1,switch_col,1);
+   writeBit(SWITCH_PIN_SELECT2,switch_col,2);
 
 }
 
 
 static void handleRead()
 {
-   int base = switch_row;
+   int base = switch_col;
    for (int i = 0; i < NUM_SWITCH_ROWS; ++i) {
       int v = digitalRead(SWITCH_PIN_READ(i));
-      bool val = (v == SWITCH_ON ? true : false);
-      int swno = base*8 + i;
+      bool val = (v == SWITCH_ON ? 1 : 0);
+      int cbase = (base + 1) % NUM_SWITCH_COLS;
+      int rnum = NUM_SWITCH_ROWS-i-1;
+      int swno = cbase*8 + rnum;
       if (switch_value[swno] == val) {
-	 if (switch_count[swno] != SWITCH_KNOWN) {
+	 if (switch_count[swno] != SWITCH_KNOWN)
 	    if (switch_count[swno] < SWITCH_BOUNCE_CYCLES) ++switch_count[swno];
-	  }
        }
       else {
-	 Serial.print("SWITCH CHANGE ");
-	 Serial.print(base);
-	 Serial.print(" ");
-	 Serial.print(i);
-	 Serial.print(" ");
-	 Serial.print(val);
-	 Serial.println();
+//        Serial.print("SWITCH CHANGE ");
+//        Serial.print(cbase);
+//        Serial.print(" ");
+//        Serial.print(rnum);
+//        Serial.print(" ");
+//        Serial.print(swno);
+//        Serial.print(" ");
+//        Serial.print(val);
+//        Serial.println();
 	 switch_value[swno] = val;
 	 switch_count[swno] = 1;
        }
@@ -179,15 +182,3 @@ static void handleRead()
 
 
 /* end of switches.ino */
-
-
-
-
-
-
-
-
-
-
-
-

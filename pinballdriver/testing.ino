@@ -222,6 +222,8 @@ static void checkSerial()
    if (Serial.available() == 0) return;
 
    int input = Serial.read();
+   Serial.print("SERIAL IN ");
+   Serial.println(input);
    switch (input) {
       case ' ' :
 	 nextTestMode();

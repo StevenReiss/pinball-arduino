@@ -160,13 +160,20 @@ static void checkControlSwitches()
 {
    if (!is_testing) {
       int sts = digitalRead(TEST_PIN);
-      if (sts == LOW) ++test_down;
+
+      if (sts == LOW) {
+         ++test_down;
+         Serial.print("TEST DOWN ");
+         Serial.println(test_down);
+       }
       else if (test_down >= TEST_DOWN_CYCLES) {
+        Serial.println("START TESTING");
 	 test_down = 0;
 	 is_testing = true;
 	 reset();
        }
-      else {
+      else if (test_down != 0) {
+        Serial.println("RESET TEST DOWN");
 	 test_down = 0;
        }
     }
