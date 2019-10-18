@@ -119,19 +119,24 @@ static void turnOffSolenoid()
 {
    digitalWrite(SOLENOID_PIN_DRIVER,SOLENOID_DRIVER_OFF);
    solenoid_on = false;
+   Serial.println("SOL OFF");
 }
 
 
 static void turnOnSolenoid()
 {
-   int which = solenoid_queue[solenoid_start] + FIRST_SOLENOID;
+   int which = solenoid_queue[solenoid_start];
    solenoid_start = (solenoid_start + 1) % NUM_SOLENOID;
    int bit = 1 << which;
+   which += FIRST_SOLENOID;
    writeBit(SOLENOID_PIN_SELECT0,which,0);
    writeBit(SOLENOID_PIN_SELECT1,which,1);
    writeBit(SOLENOID_PIN_SELECT2,which,2);
    writeBit(SOLENOID_PIN_SELECT3,which,3);
    digitalWrite(SOLENOID_PIN_DRIVER,SOLENOID_DRIVER_ON);
+   Serial.print("SOL ON ");
+   Serial.println(which);
+   
 
    solenoid_queued &= ~bit;
    solenoid_on = true;
@@ -152,4 +157,3 @@ void solenoidsReset()
 
 
 /* end of solenoids.ino */
-
