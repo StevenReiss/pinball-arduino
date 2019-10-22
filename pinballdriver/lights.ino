@@ -177,7 +177,7 @@ static void updateRows()
 
 static void updatePulse()
 {
-   int row = start_row + pulse_row;
+   int row = (start_row + pulse_row) % NUM_LIGHT_ROWS;
    pulse_row = (pulse_row + 1) % LIGHT_NUM_ENABLED_ROW;
 
    int base = row * 8;
@@ -188,8 +188,12 @@ static void updatePulse()
    writeBit(LIGHT_PIN_SELECT2,row,2);
 
    for (int j = 0; j < NUM_LIGHT_COLUMNS; ++j) {
-      if (lights[base+j]) digitalWrite(LIGHT_PIN_DRIVE(j),LIGHT_DRIVE_ON);
-      else digitalWrite(LIGHT_PIN_DRIVE(j),LIGHT_DRIVE_OFF);
+      if (lights[base+j]) {
+        digitalWrite(LIGHT_PIN_DRIVE(j),LIGHT_DRIVE_ON);
+      }
+      else {
+        digitalWrite(LIGHT_PIN_DRIVE(j),LIGHT_DRIVE_OFF);
+      }
     }
 
    digitalWrite(LIGHT_PIN_ENABLE,HIGH);

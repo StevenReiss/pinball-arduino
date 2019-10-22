@@ -445,7 +445,7 @@ static void nextLightTest()
    else {
       Serial.print("TURN ON LIGHT ");
       Serial.println(test_counter);
-      if (test_counter > 0) lightOff(test_counter-1);
+      disableAllLights();
       lightOn(test_counter);
       next_test_check = addTime(micros(),TEST_LIGHT_INTERVAL);
     }
