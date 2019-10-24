@@ -77,8 +77,8 @@ typedef void (*SwitchCallback)(int);
 
 const long TEST_SWITCH_CHECK_TIME = 100000;
 
-const int TEST_DOWN_CYCLES = 2;
-const int RESET_DOWN_CYCLES = 10;
+const int TEST_DOWN_CYCLES = 1;
+const int RESET_DOWN_CYCLES = 3;
 
 
 

@@ -230,22 +230,27 @@ static void checkSerial()
 	 break;
       case 'i' :
       case 'I' :
+         endCurrentTest();
 	 setTestIdle();
 	 break;
       case 's' :
       case 'S' :
+         endCurrentTest();
 	 startSolenoidTest();
 	 break;
       case 'A' :
       case 'a' :
+         endCurrentTest();
 	 startSoundTest();
 	 break;
       case 'l' :
       case 'L' :
+         endCurrentTest();
 	 startLightTest();
 	 break;
       case 'p' :
       case 'P' :
+         endCurrentTest();
 	 startSpecialTest();
 	 break;
       default :
@@ -274,13 +279,16 @@ static void nextTestMode()
       case TEST_LIGHTS :
 	 ++test_counter;
 	 if (test_counter < NUM_LIGHTS) return;
+         disableAllLights();
 	 break;
       case TEST_SPECIALS :
 	 ++test_counter;
-	 if (test_counter < NUM_SPECIAL) return;
+	 if (test_counter < NUM_SPECIAL + 1) return;
 	 break;
     }
 
+   endCurrentTest();
+   
    next_test_check = 0;
    switch (last_test_mode) {
       default :
@@ -306,6 +314,7 @@ static void nextTestMode()
 
 static void updateTestMode()
 {
+   last_test_mode = test_mode;
    switch(test_mode) {
       default :
       case TEST_IDLE :
@@ -332,7 +341,28 @@ static void setTestIdle()
    next_test_check = 0;
 }
 
-
+static void endCurrentTest()
+{
+   last_test_mode = test_mode;
+   
+   switch (test_mode) {
+      default :
+      case TEST_IDLE :
+         break;
+      case TEST_SOLENOIDS :
+         endSolenoidTest();
+         break;
+      case TEST_SOUNDS :
+         endSoundTest();
+         break;
+      case TEST_LIGHTS :
+         endLightTest();
+         break;
+      case TEST_SPECIALS :
+         endSpecialTest();
+         break;
+   }
+}
 
 
 /********************************************************************************/
@@ -371,6 +401,8 @@ static void startSolenoidTest()
    next_test_check = addTime(micros(),TEST_START_INTERVAL);
 }
 
+static void endSolenoidTest()
+{ }
 
 
 static void nextSolenoidTest()
@@ -403,7 +435,10 @@ static void startSoundTest()
    next_test_check = addTime(micros(),TEST_START_INTERVAL);
 }
 
-
+static void endSoundTest()
+{
+   
+}
 
 static void nextSoundTest()
 {
@@ -435,6 +470,11 @@ static void startLightTest()
    disableAllLights();
 }
 
+
+static void endLightTest()
+{
+   disableAllLights();
+}
 
 
 static void nextLightTest()
@@ -494,22 +534,29 @@ static void startSpecialTest()
    test_counter = 0;
    test_state = false;
    next_test_check = addTime(micros(),TEST_START_INTERVAL);
+   specialEnable();
+}
+
+
+static void endSpecialTest()
+{
+   specialDisable();
 }
 
 
 
 static void nextSpecialTest()
 {
-   if (test_counter > NUM_SPECIAL) {
+   if (test_counter > NUM_SPECIAL+1) {
       setTestIdle();
     }
+   else if (test_counter == 0) ;
    else {
       Serial.print("TRIGGER SPECIAL ");
-      Serial.println(test_counter);
-      triggerSpecial(test_counter);
+      Serial.println(test_counter-1);
+      triggerSpecial(test_counter-1);
       next_test_check = addTime(micros(),TEST_SPECIAL_INTERVAL);
     }
-   setTestIdle();
 }
 
 

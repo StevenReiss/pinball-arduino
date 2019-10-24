@@ -163,8 +163,8 @@ static void checkControlSwitches()
 
       if (sts == LOW) {
          ++test_down;
-         Serial.print("TEST DOWN ");
-         Serial.println(test_down);
+//         Serial.print("TEST DOWN ");
+//         Serial.println(test_down);
        }
       else if (test_down >= TEST_DOWN_CYCLES) {
         Serial.println("START TESTING");
@@ -173,7 +173,6 @@ static void checkControlSwitches()
 	 reset();
        }
       else if (test_down != 0) {
-        Serial.println("RESET TEST DOWN");
 	 test_down = 0;
        }
     }

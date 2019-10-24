@@ -166,14 +166,12 @@ static void checkSwitch(unsigned long now)
 
    for (int i = 0; i < NUM_SPECIAL; ++i) {
       int sts = digitalRead(SPECIAL_PIN_IN(cur_special));
-      if (i == test_switch) sts = SPECIAL_ON;
+      if (cur_special == test_switch) sts = SPECIAL_ON;
      
       if (sts == SPECIAL_ON) {
 	 if (special_switch != cur_special) {
-            if (is_testing && test_switch < 0) {
-               Serial.print("DETECT SPECIAL ");
-               Serial.println(i);
-             }
+//            Serial.print("DETECT SPECIAL ");
+//            Serial.println(cur_special);
 	    special_switch = cur_special;
 	    triggerSpecialSolenoid(now);
 	  }
@@ -191,6 +189,7 @@ static void checkSwitch(unsigned long now)
 
 static void removeSpecialSolenoid()
 {
+//   Serial.println("SPECIAL OFF");     
    digitalWrite(SPECIAL_PIN_DRIVER,LOW);
    next_special_off = 0;
    next_special_on = 0;
@@ -205,6 +204,8 @@ static void triggerSpecialSolenoid(unsigned long now)
       removeSpecialSolenoid();
     }
    else {
+//      Serial.print("SPECIAL ON ");
+//      Serial.println(special_switch);
       writeBit(SPECIAL_PIN_OUT_SELECT0,special_switch,0);
       writeBit(SPECIAL_PIN_OUT_SELECT1,special_switch,1);
       writeBit(SPECIAL_PIN_OUT_SELECT2,special_switch,2);

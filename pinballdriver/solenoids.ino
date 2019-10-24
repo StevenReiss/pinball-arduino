@@ -118,8 +118,8 @@ void solenoidsUpdate(unsigned long now)
 static void turnOffSolenoid()
 {
    digitalWrite(SOLENOID_PIN_DRIVER,SOLENOID_DRIVER_OFF);
-   solenoid_on = false;
-   Serial.println("SOL OFF");
+//   solenoid_on = false;
+//   Serial.println("SOL OFF");
 }
 
 
@@ -134,8 +134,8 @@ static void turnOnSolenoid()
    writeBit(SOLENOID_PIN_SELECT2,which,2);
    writeBit(SOLENOID_PIN_SELECT3,which,3);
    digitalWrite(SOLENOID_PIN_DRIVER,SOLENOID_DRIVER_ON);
-   Serial.print("SOL ON ");
-   Serial.println(which);
+//   Serial.print("SOL ON ");
+//   Serial.println(which);
    
 
    solenoid_queued &= ~bit;
