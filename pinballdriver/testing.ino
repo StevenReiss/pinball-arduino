@@ -554,6 +554,7 @@ void setupDeltaTimer(DeltaTimerP timer,const char * name,int numrpt)
    timer->time_total = 0;
    timer->time_max = 0;
    timer->time_reports = numrpt;
+   timer->time_name = name;
 }
 
 
@@ -561,6 +562,7 @@ void setupDeltaTimer(DeltaTimerP timer,const char * name,int numrpt)
 
 void deltaTimer(DeltaTimerP timer)
 {
+   if (!is_testing) return;
    if (timer->time_reports == 0) return;
 
    unsigned long now = micros();
@@ -572,7 +574,7 @@ void deltaTimer(DeltaTimerP timer)
       if (delta > timer->time_max) timer->time_max = delta;
       timer->time_total += delta;
       ++timer->time_count;
-      if ((timer->time_count % 1024) == 0) deltaTimerReport(timer);
+      if ((timer->time_count % 10240) == 0) deltaTimerReport(timer);
     }
    timer->time_last = now;
 }
@@ -589,7 +591,10 @@ static void deltaTimerReport(DeltaTimerP timer)
    Serial.print(" TIME: ");
    Serial.print(avg);
    Serial.print(" ");
-   Serial.println(timer->time_max);
+   Serial.print(timer->time_max);
+   Serial.print(" ");
+   Serial.print(timer->time_count);
+   Serial.println();
 
    if (timer->time_reports > 0) {
       timer->time_reports--;

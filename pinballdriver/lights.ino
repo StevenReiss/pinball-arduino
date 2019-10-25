@@ -20,7 +20,9 @@ static int  pulse_row;
 static unsigned long next_light_pulse;		      // next time to pulse lights
 static unsigned long next_light_rowset; 	      // next time to change rows
 
-static boolean use_interrupts = false;
+static boolean use_interrupts = true;
+
+static struct DeltaTimer lamp_timer;
 
 
 
@@ -103,6 +105,8 @@ void lightsSetup()
    pulse_row = 0;
 
    if (use_interrupts) setupLightInterrupts();
+
+   setupDeltaTimer(&lamp_timer,"LIGHTS",10);
 }
 
 
@@ -185,6 +189,8 @@ static void updateRows()
 
 static void updatePulse()
 {
+   deltaTimer(&lamp_timer);
+   
    int row = (start_row + pulse_row) % NUM_LIGHT_ROWS;
    pulse_row = (pulse_row + 1) % LIGHT_NUM_ENABLED_ROW;
 
@@ -221,7 +227,7 @@ static void setupLightInterrupts()
    noInterrupts();
    TCCR4A = 0;
    TCCR4B = 0;
-   TCNT4 = 250;
+   TCNT4 = 65536-250;
    bitSet(TCCR4B,CS11);
    bitSet(TCCR4B,CS10);
    bitSet(TIMSK4,TOIE4);
@@ -229,11 +235,10 @@ static void setupLightInterrupts()
 }
 
 
-ISR(Timer4_OVF_vect)
+ISR(TIMER4_OVF_vect)
 {
-   TCNT4 = 250;
+   TCNT4 = 65536-250;
    updatePulse();
-
 }
 
 

@@ -48,7 +48,7 @@ const int	TEST_PIN_ADVANCE = TEST_PIN_START + 4;
 /********************************************************************************/
 
 struct DeltaTimer {
-   char * time_name;
+   const char * time_name;
    unsigned long time_last;
    long time_count;
    long time_total;

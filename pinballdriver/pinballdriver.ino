@@ -50,6 +50,7 @@ void setup()
 {
    Serial.begin(115200);
    last_count = micros();
+   Serial.println("PINBALL STARTING");
 
    pinMode(TEST_PIN, INPUT_PULLUP);
    pinMode(SOFT_RESET_PIN, INPUT_PULLUP);
