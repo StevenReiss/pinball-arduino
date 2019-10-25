@@ -20,6 +20,8 @@ static int  pulse_row;
 static unsigned long next_light_pulse;		      // next time to pulse lights
 static unsigned long next_light_rowset; 	      // next time to change rows
 
+static boolean use_interrupts = false;
+
 
 
 /********************************************************************************/
@@ -30,7 +32,7 @@ static unsigned long next_light_rowset; 	      // next time to change rows
 
 void setLight(int lno,bool fg)
 {
-   lights[lno] = fg;	
+   lights[lno] = fg;
 }
 
 
@@ -99,6 +101,8 @@ void lightsSetup()
    next_light_pulse = 0;
    next_light_rowset = 0;
    pulse_row = 0;
+
+   if (use_interrupts) setupLightInterrupts();
 }
 
 
@@ -130,7 +134,7 @@ void lightsUpdate(unsigned long now)
       next_light_rowset = addTime(now,LIGHT_CYCLE_TIME);
     }
    if (now >= next_light_pulse) {
-      updatePulse();
+      if (!use_interrupts) updatePulse();
       next_light_pulse = addTime(now,LIGHT_PULSE_TIME);
     }
 }
@@ -169,8 +173,12 @@ void lightsReset()
 
 static void updateRows()
 {
+   if (use_interrupts) noInterrupts();
+
    start_row = (start_row + 1) % NUM_LIGHT_ROWS;
    end_row = (end_row + 1) % NUM_LIGHT_ROWS;
+
+   if (use_interrupts) interrupts();
 }
 
 
@@ -189,14 +197,43 @@ static void updatePulse()
 
    for (int j = 0; j < NUM_LIGHT_COLUMNS; ++j) {
       if (lights[base+j]) {
-        digitalWrite(LIGHT_PIN_DRIVE(j),LIGHT_DRIVE_ON);
+	digitalWrite(LIGHT_PIN_DRIVE(j),LIGHT_DRIVE_ON);
       }
       else {
-        digitalWrite(LIGHT_PIN_DRIVE(j),LIGHT_DRIVE_OFF);
+	digitalWrite(LIGHT_PIN_DRIVE(j),LIGHT_DRIVE_OFF);
       }
     }
 
    digitalWrite(LIGHT_PIN_ENABLE,HIGH);
+}
+
+
+
+
+/********************************************************************************/
+/*										*/
+/*	Interrupt-driven lights 						*/
+/*										*/
+/********************************************************************************/
+
+static void setupLightInterrupts()
+{
+   noInterrupts();
+   TCCR4A = 0;
+   TCCR4B = 0;
+   TCNT4 = 250;
+   bitSet(TCCR4B,CS11);
+   bitSet(TTCR4B,CS10);
+   bitSet(TIMSK4,TOIE4);
+   interrupts();
+}
+
+
+ISR(Timer4_OVF_vect)
+{
+   TCNT4 = 250;
+   updatePulse();
+
 }
 
 
