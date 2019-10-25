@@ -43,10 +43,7 @@ const int	NUM_LIGHTS = 64;
 const int	LIGHT_NUM_ENABLED_ROW = 3;
 
 const long	LIGHT_PULSE_TIME = 1000;
-const long	LIGHT_CYCLE_TIME = 150000;	   // 8/3 * this yields blink time
-
-//const long  LIGHT_PULSE_TIME = 5000000;
-//const long  LIGHT_CYCLE_TIME = 150000;     // 8/3 * this yields blink time
+const long	LIGHT_CYCLE_TIME = 500000 / 8 * LIGHT_NUM_ENABLED_ROW; 
 
 const int	LIGHT_DRIVE_ON = HIGH;
 const int	LIGHT_DRIVE_OFF = LOW;
