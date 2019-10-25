@@ -1022,7 +1022,7 @@ static void addCredit()
 {
    game_data.game_credits++;
    updateCredits();
-   queueSolenoid(SOLENOID_CREDIT_KNOCKER);
+   // queueSolenoid(SOLENOID_CREDIT_KNOCKER);
 }
 
 

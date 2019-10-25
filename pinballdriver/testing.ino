@@ -25,15 +25,12 @@ static int mem_protect;
 static int auto_manual;
 static int advance_btn;
 
-static long testing_total_time;
-static long testing_num_times;
-static long testing_last_time;
-static long testing_num_total;
-
-
 static bool test_state;
 static int display_counter;
 static bool first_time;
+
+struct DeltaTimer	loop_timer;
+
 
 
 
@@ -57,11 +54,6 @@ void testingSetup()
    mem_protect = HIGH;
    auto_manual = HIGH;
    advance_btn = HIGH;
-
-   testing_last_time = 0;
-   testing_total_time = 0;
-   testing_num_times = 0;
-   testing_num_total = 0;
 
    pinMode(TEST_PIN_MEM_PROTECT,INPUT_PULLUP);
    pinMode(TEST_PIN_AUTO_MANUAL,INPUT_PULLUP);
@@ -124,23 +116,10 @@ void testingUpdate(unsigned long now)
 {
    if (first_time) {
       testingStart();
-      testing_last_time = now;
+      setupDeltaTimer(&loop_timer,"LOOP",10);
     }
-   else if (testing_num_times < 10000) {
-      ++testing_num_times;
-      if (testing_num_times % 1000 == 0) {
-	 testing_total_time += now - testing_last_time;
-	 ++testing_num_total;
-	 Serial.print("TESTING CYCLE TIME = ");
-	 Serial.println(now - testing_last_time);
-       }
-      testing_last_time = now;
-    }
-   else if (testing_num_times == 10000) {
-      ++testing_num_times;
-      Serial.print("TESTING AVG CYCLE TIME = ");
-      Serial.println(testing_total_time / testing_num_total);
-    }
+
+   deltaTimer(&loop_timer);
 
    if (now >= next_test_update) {
       handleSwitchChanges(4,testSwitchOff,testSwitchOn);
@@ -230,27 +209,29 @@ static void checkSerial()
 	 break;
       case 'i' :
       case 'I' :
-         endCurrentTest();
+	 endCurrentTest();
 	 setTestIdle();
 	 break;
       case 's' :
       case 'S' :
-         endCurrentTest();
+	 endCurrentTest();
 	 startSolenoidTest();
 	 break;
       case 'A' :
       case 'a' :
-         endCurrentTest();
+      case 'N' :
+      case 'n' :
+	 endCurrentTest();
 	 startSoundTest();
 	 break;
       case 'l' :
       case 'L' :
-         endCurrentTest();
+	 endCurrentTest();
 	 startLightTest();
 	 break;
       case 'p' :
       case 'P' :
-         endCurrentTest();
+	 endCurrentTest();
 	 startSpecialTest();
 	 break;
       default :
@@ -279,7 +260,7 @@ static void nextTestMode()
       case TEST_LIGHTS :
 	 ++test_counter;
 	 if (test_counter < NUM_LIGHTS) return;
-         disableAllLights();
+	 disableAllLights();
 	 break;
       case TEST_SPECIALS :
 	 ++test_counter;
@@ -288,7 +269,7 @@ static void nextTestMode()
     }
 
    endCurrentTest();
-   
+
    next_test_check = 0;
    switch (last_test_mode) {
       default :
@@ -344,23 +325,23 @@ static void setTestIdle()
 static void endCurrentTest()
 {
    last_test_mode = test_mode;
-   
+
    switch (test_mode) {
       default :
       case TEST_IDLE :
-         break;
+	 break;
       case TEST_SOLENOIDS :
-         endSolenoidTest();
-         break;
+	 endSolenoidTest();
+	 break;
       case TEST_SOUNDS :
-         endSoundTest();
-         break;
+	 endSoundTest();
+	 break;
       case TEST_LIGHTS :
-         endLightTest();
-         break;
+	 endLightTest();
+	 break;
       case TEST_SPECIALS :
-         endSpecialTest();
-         break;
+	 endSpecialTest();
+	 break;
    }
 }
 
@@ -437,7 +418,7 @@ static void startSoundTest()
 
 static void endSoundTest()
 {
-   
+
 }
 
 static void nextSoundTest()
@@ -556,6 +537,62 @@ static void nextSpecialTest()
       Serial.println(test_counter-1);
       triggerSpecial(test_counter-1);
       next_test_check = addTime(micros(),TEST_SPECIAL_INTERVAL);
+    }
+}
+
+
+/********************************************************************************/
+/*										*/
+/*	Delta time management							*/
+/*										*/
+/********************************************************************************/
+
+void setupDeltaTimer(DeltaTimerP timer,const char * name,int numrpt)
+{
+   timer->time_last = 0;
+   timer->time_count = 0;
+   timer->time_total = 0;
+   timer->time_max = 0;
+   timer->time_reports = numrpt;
+}
+
+
+
+
+void deltaTimer(DeltaTimerP timer)
+{
+   if (timer->time_reports == 0) return;
+
+   unsigned long now = micros();
+   if (now < timer->time_last) {
+      timer->time_last = 0;
+    }
+   if (timer->time_last != 0) {
+      long delta = now - timer->time_last;
+      if (delta > timer->time_max) timer->time_max = delta;
+      timer->time_total += delta;
+      ++timer->time_count;
+      if ((timer->time_count % 1024) == 0) deltaTimerReport(timer);
+    }
+   timer->time_last = now;
+}
+
+
+
+static void deltaTimerReport(DeltaTimerP timer)
+{
+   if (timer->time_count == 0) return;
+
+   long avg = timer->time_total / timer->time_count;
+
+   Serial.print(timer->time_name);
+   Serial.print(" TIME: ");
+   Serial.print(avg);
+   Serial.print(" ");
+   Serial.println(timer->time_max);
+
+   if (timer->time_reports > 0) {
+      timer->time_reports--;
     }
 }
 

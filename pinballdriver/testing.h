@@ -41,5 +41,23 @@ const int	TEST_PIN_ADVANCE = TEST_PIN_START + 4;
 
 
 
+/********************************************************************************/
+/*										*/
+/*	Timing structures							*/
+/*										*/
+/********************************************************************************/
+
+struct DeltaTimer {
+   char * time_name;
+   unsigned long time_last;
+   long time_count;
+   long time_total;
+   long time_max;
+   int time_reports;
+};
+
+typedef struct DeltaTimer * DeltaTimerP;
+
+
 
 /* end of testing.h */

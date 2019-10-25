@@ -223,7 +223,7 @@ static void setupLightInterrupts()
    TCCR4B = 0;
    TCNT4 = 250;
    bitSet(TCCR4B,CS11);
-   bitSet(TTCR4B,CS10);
+   bitSet(TCCR4B,CS10);
    bitSet(TIMSK4,TOIE4);
    interrupts();
 }
