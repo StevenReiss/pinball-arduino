@@ -238,7 +238,7 @@ void highScoreDisplay()
    disableAllLights();
    lightOn(LIGHT_GAME_OVER);
    for (int i = 0; i < NUM_LIGHTS; ++i) {
-      if (random(2) == 1) lightOn(i);
+      if (random(4) == 1) lightOn(i);
     }
 }
 

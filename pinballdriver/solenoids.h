@@ -31,7 +31,7 @@ const int SOLENOID_PIN_DRIVER =  SOLENOID_PIN_START + 8;
 const int NUM_SOLENOID = 11;
 const int FIRST_SOLENOID = 1;
 
-const long SOLENOID_ON_TIME = 20000;          
+const long SOLENOID_ON_TIME = 40000;          
 const long SOLENOID_OFF_TIME = 1000;
 const long SOLENOID_CHECK_TIME = 5000;
 
