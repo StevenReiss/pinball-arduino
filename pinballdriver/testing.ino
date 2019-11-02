@@ -20,6 +20,7 @@ static int test_counter;
 static unsigned long next_test_update;
 static unsigned long next_test_check;
 static unsigned long next_display_count;
+static unsigned long next_light_change;
 static int switch_down;
 static int mem_protect;
 static int auto_manual;
@@ -47,6 +48,7 @@ void testingSetup()
    next_test_check = 0;
    next_test_update = 0;
    next_display_count = 0;
+   next_light_change = 0;
    switch_down = 0;
    test_counter = 0;
    display_counter = 0;
@@ -82,8 +84,7 @@ static void testingStart()
    for (int i = 0; i < NUM_SCORE_DISPLAY; ++i) blankDisplay(i);
    blankDisplayLeft();
    blankDisplayRight();
-
-
+   disableAllLights();
 }
 
 
@@ -101,6 +102,7 @@ void testingWrap()
    if (next_test_check != 0) next_test_check = 1;
    next_test_update = 0;
    next_display_count = 1;
+   next_light_change = 0;
 }
 
 
@@ -136,6 +138,11 @@ void testingUpdate(unsigned long now)
       next_display_count = addTime(now,TEST_DISPLAY_COUNT_INTERVAL);
     }
 
+   if (now > next_light_change) {
+      randomizeLights();
+      next_light_change = addTime(now,TEST_LIGHT_RANDOMIZE);
+    }
+    
    checkSerial();
 }
 
@@ -473,7 +480,16 @@ static void nextLightTest()
 }
 
 
-
+static void randomizeLights()
+{
+   if (test_mode == TEST_LIGHTS) return;
+   
+   disableAllLights();
+   
+   for (int i = 0; i < NUM_LIGHTS; ++i) {
+      if (random(4) == 1) lightOn(i);
+    }
+}
 
 /********************************************************************************/
 /*										*/

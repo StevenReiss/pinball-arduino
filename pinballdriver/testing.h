@@ -23,6 +23,7 @@ const unsigned long TEST_DISPLAY_COUNT_INTERVAL = 500000;
 
 const unsigned long TEST_SPECIAL_INTERVAL = 5000000;
 
+const unsigned long TEST_LIGHT_RANDOMIZE = 3000000;
 
 const int TEST_BOUNCE = 2;
 
