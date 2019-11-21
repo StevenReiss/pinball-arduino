@@ -15,12 +15,10 @@
 
 static unsigned long	next_special_check;
 static unsigned long	next_special_off;
-static unsigned long	next_special_on;
 
-static int		cur_special;		// what we are looking at
 static int		special_switch; 	// which switch is on
 static bool		special_disable;	// disable flag
-static int              test_switch;
+static int		test_switch;
 
 
 
@@ -76,9 +74,7 @@ void specialSetup()
 
    next_special_check = 0;
    next_special_off = 0;
-   next_special_on = 0;
    special_disable = true;
-   cur_special = 0;
    special_switch = NO_SPECIAL;
    test_switch = -1;
 
@@ -103,8 +99,8 @@ void specialSetup()
 void specialWrap()
 {
    next_special_check = 0;
-   next_special_off = 0;
-   next_special_on = 0;
+   if (next_special_off > 0) next_special_off = 1;
+   else next_special_off = 0;
 }
 
 
@@ -118,17 +114,16 @@ void specialWrap()
 
 void specialUpdate(unsigned long now)
 {
-   if (now >= next_special_check) {
-      checkSwitch(now);
-      next_special_check = addTime(now,SPECIAL_CHECK_TIME);
-    }
-   if (next_special_on > 0 && now >= next_special_on) {
-      triggerSpecialSolenoid(now);
-    }
    if (next_special_off > 0 && now >= next_special_off) {
       test_switch = -1;
-      digitalWrite(SPECIAL_PIN_DRIVER,LOW);
-      next_special_on = addTime(now,SPECIAL_OFF_TIME);
+      removeSpecialSolenoid();
+    }
+   if (now >= next_special_check && next_special_off > 0) {
+      checkOffSwitch();
+    }
+   if (now >= next_special_check && next_special_off == 0) {
+      checkSwitch(now);
+      next_special_check = addTime(now,SPECIAL_CHECK_TIME);
     }
 }
 
@@ -156,63 +151,63 @@ void specialReset()
 
 static void checkSwitch(unsigned long now)
 {
-   if (special_disable) {
-      special_switch = NO_SPECIAL;
-      return;
-    }
-
-   if (special_switch != NO_SPECIAL) cur_special = special_switch;
-   else cur_special = (cur_special + 1) % NUM_SPECIAL;
-
-   for (int i = 0; i < NUM_SPECIAL; ++i) {
-      int sts = digitalRead(SPECIAL_PIN_IN(cur_special));
-      if (cur_special == test_switch) {
-         sts = SPECIAL_ON;
+   for (int spec = 0; spec < NUM_SPECIAL; ++spec) {
+      int sts = digitalRead(SPECIAL_PIN_IN(spec));
+      if (spec == test_switch) {
+	 sts = SPECIAL_ON;
        }
       if (sts == SPECIAL_ON) {
-	 if (special_switch != cur_special) {
-//            if (is_testing) {
-               Serial.print("DETECT SPECIAL ");
-               Serial.println(cur_special);
-//            }
-	    special_switch = cur_special;
-	    triggerSpecialSolenoid(now);
+	 if (special_switch != spec) {
+//	      if (is_testing) {
+	       Serial.print("DETECT SPECIAL ");
+	       Serial.println(spec);
+//	      }
+	    special_switch = spec;
+	    if (!special_disable) turnOnSpecialSolenoid(spec,now);
 	  }
 	 break;
        }
-      else if (special_switch != NO_SPECIAL) {
-	 special_switch = NO_SPECIAL;
-	 triggerSpecialSolenoid(now);
-       }
-      cur_special = (cur_special + 1) % NUM_SPECIAL;
     }
 }
+
+
+
+static void checkOffSwitch()
+{
+   if (special_switch == NO_SPECIAL) return;
+   int sts = digitalRead(SPECIAL_PIN_IN(special_switch));
+   if (test_switch == special_switch) sts = SPECIAL_ON;
+   if (sts != SPECIAL_ON) removeSpecialSolenoid();
+}
+
 
 
 
 static void removeSpecialSolenoid()
 {
-   Serial.println("SPECIAL OFF");     
+   if (!special_disable) Serial.println("SPECIAL SOLENOID OFF");
    digitalWrite(SPECIAL_PIN_DRIVER,LOW);
    next_special_off = 0;
-   next_special_on = 0;
    special_switch = NO_SPECIAL;
 }
 
 
 
-static void triggerSpecialSolenoid(unsigned long now)
+static void turnOnSpecialSolenoid(int spec,unsigned long now)
 {
-   if (special_switch == NO_SPECIAL) {
+   if (spec == NO_SPECIAL || special_disable) {
       removeSpecialSolenoid();
     }
    else {
+      int spno = SPECIAL_OUT(spec);
       digitalWrite(SPECIAL_PIN_DRIVER,LOW);
-      Serial.print("SPECIAL ON ");
-      Serial.println(special_switch);
-      writeBit(SPECIAL_PIN_OUT_SELECT0,special_switch,0);
-      writeBit(SPECIAL_PIN_OUT_SELECT1,special_switch,1);
-      writeBit(SPECIAL_PIN_OUT_SELECT2,special_switch,2);
+      Serial.print("SPECIAL SOLENOID ON ");
+      Serial.print(spec);
+      Serial.print(" ");
+      Serial.println(spno);
+      writeBit(SPECIAL_PIN_OUT_SELECT0,spno,0);
+      writeBit(SPECIAL_PIN_OUT_SELECT1,spno,1);
+      writeBit(SPECIAL_PIN_OUT_SELECT2,spno,2);
       digitalWrite(SPECIAL_PIN_DRIVER,HIGH);
       next_special_off = addTime(now,SPECIAL_ON_TIME);
     }

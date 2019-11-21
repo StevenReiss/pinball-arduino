@@ -156,9 +156,10 @@ static void handleRead()
    for (int i = 0; i < NUM_SWITCH_ROWS; ++i) {
       int v = digitalRead(SWITCH_PIN_READ(i));
       bool val = (v == SWITCH_ON ? 1 : 0);
-      int cbase = (base + 1) % NUM_SWITCH_COLS;
-      int rnum = NUM_SWITCH_ROWS-i-1;
+      int cbase = NUM_SWITCH_COLS - base - 1;
+      int rnum = NUM_SWITCH_ROWS - i - 1;
       int swno = cbase*8 + rnum;
+      if (swno < 0 || swno >= NUM_SWITCH) continue;
       if (switch_value[swno] == val) {
 	 if (switch_count[swno] != SWITCH_KNOWN)
 	    if (switch_count[swno] < SWITCH_BOUNCE_CYCLES) ++switch_count[swno];

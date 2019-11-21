@@ -17,11 +17,26 @@ static byte	sound_end;
 
 static unsigned long next_sound;
 static bool	sound_on;
+static int	cur_sound;
 
 static volatile int play_counter;
 static int	play_max;
 static unsigned char * play_data;
 static bool	play_on;
+
+static bool	use_pwm = false;
+
+static unsigned long play_time[NUM_SOUND] = {
+   1000000,			// GROAN
+   250000,			// DING1
+   250000,			// DING2
+   250000,			// DING3
+   250000,			// DING4
+   3000000,			// DEATH
+   1000000,			// SPINNER
+   250000,			// THROB
+   250000			// BLAST
+};
 
 
 
@@ -58,6 +73,7 @@ void soundsSetup()
    sound_end = 0;
    next_sound = 0;
    sound_on = false;
+   cur_sound = -1;
 
    digitalWrite(SOUND_PIN_DRIVER,SOUND_OFF);
    digitalWrite(SOUND_PIN_SELECT0,LOW);
@@ -77,17 +93,19 @@ void soundPlaySetup()
    play_data = NULL;
    play_on = false;
 
-   pinMode(SOUND_PLAY_PWM_PIN,OUTPUT);
+   if (use_pwm) {
+      pinMode(SOUND_PLAY_PWM_PIN,OUTPUT);
 
-   // setup timer 1 with fast PWM mode, noninverting (pins 11,12)
-   // with timer clock prescaler = 1
-   TCCR1A = 0;
-   TCCR1B = 0;
-   bitSet(TCCR1A,WGM21);
-   bitSet(TCCR1A,WGM20);
-   bitSet(TCCR1A,COM2A1);
-   bitSet(TCCR1B,CS20);
-   OCR1A = 0;
+      // setup timer 1 with fast PWM mode, noninverting (pins 11,12)
+      // with timer clock prescaler = 1
+      TCCR1A = 0;
+      TCCR1B = 0;
+      bitSet(TCCR1A,WGM21);
+      bitSet(TCCR1A,WGM20);
+      bitSet(TCCR1A,COM2A1);
+      bitSet(TCCR1B,CS20);
+      OCR1A = 0;
+   }
 }
 
 
@@ -114,7 +132,7 @@ void soundsWrap()
 void soundsReset()
 {
    digitalWrite(SOUND_PIN_DRIVER,SOUND_OFF);
-   fastpwmStop();
+   if (use_pwm) fastpwmStop();
 }
 
 
@@ -123,27 +141,6 @@ void soundsReset()
 /*	Sound processing methods						*/
 /*										*/
 /********************************************************************************/
-
-void soundsUpdate(unsigned long now)
-{
-   if (now >= next_sound && sound_on) {
-      turnOffSound();
-      next_sound = addTime(now,SOUND_OFF_TIME);
-    }
-   if (now >= next_sound) {
-      if (sound_start == sound_end) {		  // empty queue
-	 next_sound = addTime(now,SOUND_CHECK_TIME);
-       }
-      else {
-	 turnOnSound();
-	 next_sound = addTime(now,SOUND_ON_TIME);
-       }
-    }
-
-   playCheck();
-}
-
-
 
 static void turnOffSound()
 {
@@ -160,7 +157,7 @@ static void turnOnSound()
 
    if (which >= 5) {
       digitalWrite(SOUND_PIN_ALTERNATE_SET,HIGH);
-      which -= 5;
+      which -= 4;
     }
    else {
       digitalWrite(SOUND_PIN_ALTERNATE_SET,LOW);
@@ -172,6 +169,29 @@ static void turnOnSound()
    digitalWrite(SOUND_PIN_DRIVER,HIGH);
 
    sound_on = true;
+   cur_sound = which;
+}
+
+
+
+void soundsUpdate(unsigned long now)
+{
+   if (now >= next_sound && sound_on) {
+      turnOffSound();
+      long delta = SOUND_OFF_TIME + play_time[cur_sound];
+      next_sound = addTime(now,delta);
+    }
+   if (now >= next_sound) {
+      if (sound_start == sound_end) {		  // empty queue
+	 next_sound = addTime(now,SOUND_CHECK_TIME);
+       }
+      else {
+	 turnOnSound();
+	 next_sound = addTime(now,SOUND_ON_TIME);
+       }
+    }
+
+   if (use_pwm) playCheck();
 }
 
 
@@ -184,7 +204,7 @@ static void turnOnSound()
 
 static void playCheck()
 {
-   if (play_on && play_data == NULL) {
+   if (play_on && play_data == NULL && use_pwm) {
       fastpwmStop();
     }
 }

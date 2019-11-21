@@ -73,6 +73,7 @@ static void testingStart()
    reset();
 
    Serial.println("TESTING START");
+   default_testing = true;
 
    test_mode = TEST_IDLE;
    next_test_check = 0;
@@ -241,6 +242,11 @@ static void checkSerial()
 	 endCurrentTest();
 	 startSpecialTest();
 	 break;
+      case 'R' :
+         default_testing = false;
+         reset();
+         setup();
+         break;
       default :
 	 break;
     }
@@ -266,7 +272,10 @@ static void nextTestMode()
 	 break;
       case TEST_LIGHTS :
 	 ++test_counter;
-	 if (test_counter < NUM_LIGHTS) return;
+	 if (test_counter < NUM_LIGHTS) {
+//                next_test_check = 0;
+	        return;
+	 }
 	 disableAllLights();
 	 break;
       case TEST_SPECIALS :
@@ -532,12 +541,14 @@ static void startSpecialTest()
    test_state = false;
    next_test_check = addTime(micros(),TEST_START_INTERVAL);
    specialEnable();
+   Serial.println("SPECIAL ENABLE");
 }
 
 
 static void endSpecialTest()
 {
    specialDisable();
+   Serial.println("SPECIAL DISABLE");
 }
 
 

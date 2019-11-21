@@ -1,5 +1,3 @@
-
-
 /********************************************************************************/
 /*										*/
 /*	pinballdriver.ino -- main program for arduino pinball			*/
@@ -36,6 +34,7 @@ static bool		is_testing;
 static byte		test_down;
 static byte		reset_down;
 static volatile int	watchdog_counter;
+static boolean          default_testing = true;
 
 
 
@@ -67,7 +66,7 @@ void setup()
 
    test_down = 0;
    reset_down = 0;
-   is_testing = false;
+   is_testing = default_testing;
 
    watchdog_counter = 0;
 
@@ -165,11 +164,9 @@ static void checkControlSwitches()
 
       if (sts == LOW) {
          ++test_down;
-//         Serial.print("TEST DOWN ");
-//         Serial.println(test_down);
        }
       else if (test_down >= TEST_DOWN_CYCLES) {
-        Serial.println("START TESTING");
+         Serial.println("START TESTING");
 	 test_down = 0;
 	 is_testing = true;
 	 reset();
@@ -177,6 +174,21 @@ static void checkControlSwitches()
       else if (test_down != 0) {
 	 test_down = 0;
        }
+      else {
+        if (Serial.available() > 0) {
+           int input = Serial.read();
+           Serial.print("SERIAL IN "); 
+           Serial.println(input);
+           switch (input) {
+              case 't' :
+              case 'T' :
+                is_testing = true;
+                reset();
+                break;
+           }
+        }
+      }
+        
     }
 
    int sts = digitalRead(SOFT_RESET_PIN);
@@ -274,8 +286,6 @@ void __wrap_system_restart_local()
 
    if (doing_reset) return;
    doing_reset = true;
-   Serial.println("HARD RESET");
-
    register uint32_t sp asm("a1");
 
    struct rst_info rst_info = {0};
@@ -287,7 +297,14 @@ void __wrap_system_restart_local()
       return;
     }
 
+   
    reset();
+
+   Serial.print("HARD RESET ");
+   Serial.print(rst_info.reason);
+   Serial.print(" ");
+   Serial.print(rst_info.exccause);
+   Serial.println();
 
    delayMicroseconds(10000);
 

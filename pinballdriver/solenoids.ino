@@ -19,6 +19,20 @@ static long	solenoid_queued;
 static unsigned long next_solenoid;
 static bool	solenoid_on;
 
+static int solenoid_time[NUM_SOLENOID] = {     // multiples of basic unit (10ms)
+        8,              // BALL_RELEASE
+        3,              // LEFT_SHOOTER
+        6,              // LA_DROP_RESET
+        8,              // SER_DROP_RESET
+        3,              // EJECT HOLE
+        6,              // BA_DROP_RESET
+        6,              // LL_DROP_RESET
+        3,              // RIGHT_SHOOTER
+        1,              // CREDIT_KNOCKER
+        1,              // LASER_LAMPS
+        1               // COIN_LOCKOUT
+};
+     
 
 
 /********************************************************************************/
@@ -96,6 +110,34 @@ void solenoidsWrap()
 /*										*/
 /********************************************************************************/
 
+static void turnOffSolenoid()
+{
+   digitalWrite(SOLENOID_PIN_DRIVER,SOLENOID_DRIVER_OFF);
+   solenoid_on = false;
+   Serial.println("SOL OFF");
+}
+
+
+static int turnOnSolenoid()
+{
+   int which0 = solenoid_queue[solenoid_start];
+   solenoid_start = (solenoid_start + 1) % NUM_SOLENOID;
+   int bit = 1 << which0;
+   int which = which0 + FIRST_SOLENOID;
+   writeBit(SOLENOID_PIN_SELECT0,which,0);
+   writeBit(SOLENOID_PIN_SELECT1,which,1);
+   writeBit(SOLENOID_PIN_SELECT2,which,2);
+   writeBit(SOLENOID_PIN_SELECT3,which,3);
+   digitalWrite(SOLENOID_PIN_DRIVER,SOLENOID_DRIVER_ON);
+
+   solenoid_queued &= ~bit;
+   solenoid_on = true;
+   
+   return which0;
+}
+
+
+
 void solenoidsUpdate(unsigned long now)
 {
    if (now >= next_solenoid && solenoid_on) {
@@ -107,39 +149,18 @@ void solenoidsUpdate(unsigned long now)
 	 next_solenoid = addTime(now,SOLENOID_CHECK_TIME);
        }
       else {
-	 turnOnSolenoid();
-	 next_solenoid = addTime(now,SOLENOID_ON_TIME);
+	 int which = turnOnSolenoid();
+         unsigned long ontime = SOLENOID_ON_TIME * solenoid_time[which];
+         Serial.print("SOLENOID ON ");
+         Serial.print(which);
+         Serial.print(" ");
+         Serial.println(ontime);
+	 next_solenoid = addTime(now,ontime);
        }
     }
 }
 
 
-
-static void turnOffSolenoid()
-{
-   digitalWrite(SOLENOID_PIN_DRIVER,SOLENOID_DRIVER_OFF);
-   solenoid_on = false;
-//   Serial.println("SOL OFF");
-}
-
-
-static void turnOnSolenoid()
-{
-   int which = solenoid_queue[solenoid_start];
-   solenoid_start = (solenoid_start + 1) % NUM_SOLENOID;
-   int bit = 1 << which;
-   which += FIRST_SOLENOID;
-   writeBit(SOLENOID_PIN_SELECT0,which,0);
-   writeBit(SOLENOID_PIN_SELECT1,which,1);
-   writeBit(SOLENOID_PIN_SELECT2,which,2);
-   writeBit(SOLENOID_PIN_SELECT3,which,3);
-   digitalWrite(SOLENOID_PIN_DRIVER,SOLENOID_DRIVER_ON);
-//   Serial.print("SOL ON ");
-//   Serial.println(which);
-
-   solenoid_queued &= ~bit;
-   solenoid_on = true;
-}
 
 
 /********************************************************************************/

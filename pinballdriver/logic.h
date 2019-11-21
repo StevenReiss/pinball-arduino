@@ -1,5 +1,4 @@
- 
- /********************************************************************************/
+/********************************************************************************/
 /*										*/
 /*	logic.h -- definitions for game logic					*/
 /*										*/
@@ -31,6 +30,8 @@ const long LOGIC_HIGH_SCORE_DISPLAY_TIME = 1000000;
 const long LOGIC_GAME_UP_STEP_TIME = 500000;
 const long LOGIC_SHOOT_AGAIN_TIME = 8000000;
 const long LOGIC_NEXT_PLAYER_WAIT = 500000;
+const long LOGIC_NEXT_SHOOTER_UPDATE = 5000000;
+const long LOGIC_SHOOTER_DELAY = 500000;
 
 const long LOGIC_RESET_TIME = 150000;
 
@@ -179,7 +180,7 @@ const int	SOLENOID_EJECT_HOLE			= 4;
 const int	SOLENOID_BA_DROP_RESET			= 5;
 const int	SOLENOID_LL_DROP_RESET			= 6;
 const int	SOLENOID_RIGHT_SHOOTER			= 7;
-const int	SOLENOID_CREDIT_KNOCKER_BROKEN 		= 8;
+const int	SOLENOID_CREDIT_KNOCKER_BROKEN		= 8;
 const int	SOLENOID_LASER_LAMPS			= 9;
 const int	SOLENOID_COIN_LOCKOUT			= 10;
 
@@ -201,13 +202,13 @@ const int	SWITCH_SLAM_TILT		       = 6;
 const int	SWITCH_HIGH_SCORE_RESET 	       = 7;
 const int	SWITCH_OUTHOLE			       = 8;
 const int	SWITCH_LEFT_SHOOTER		       = 9;
-const int	SWITCH_LEFT_SPECIAL		       = 10;	
+const int	SWITCH_LEFT_SPECIAL		       = 10;
 const int	SWITCH_LEFT_INSIDE_ROLLOVER	       = 11;
-const int	SWITCH_LEFT_KICKER		       = 12;	
+const int	SWITCH_LEFT_KICKER		       = 12;
 const int	SWITCH_MIDDLE_LEFT_SIDE_STANDUP        = 13;
 const int	SWITCH_LEFT_SIDE_TARGET 	       = 14;
 const int	SWITCH_UNUSED			       = 15;
-const int	SWITCH_LEFT_SPINNER		       = 16;	
+const int	SWITCH_LEFT_SPINNER		       = 16;
 const int	SWITCH_BULLS_EYE_TARGET 	       = 17;
 const int	SWITCH_LASER_L_DROP_TARGET	       = 18;
 const int	SWITCH_LASER_A_DROP_TARGET	       = 19;
@@ -222,7 +223,7 @@ const int	SWITCH_ROLLOVER_3_AND_4 	       = 27;
 const int	SWITCH_ROLLOVER_5_AND_6 	       = 28;
 const int	SWITCH_ROLLOVER_7_AND_8 	       = 29;
 const int	SWITCH_ROLLOVER_9_AND_10	       = 30;
-const int	SWITCH_EJECT_HOLE		       = 31;	
+const int	SWITCH_EJECT_HOLE		       = 31;
 const int	SWITCH_UPPER_RIGHT_STANDUP	       = 32;
 const int	SWITCH_BALL_B_DROP_TARGET	       = 33;
 const int	SWITCH_BALL_A_DROP_TARGET	       = 34;
@@ -234,7 +235,7 @@ const int	SWITCH_RIGHT_SPINNER		       = 39;
 const int	SWITCH_RIGHT_SHOOTER		       = 40;
 const int	SWITCH_RIGHT_SPECIAL		       = 41;
 const int	SWITCH_RIGHT_INSIDE_ROLLOVER	       = 42;
-const int	SWITCH_RIGHT_KICKER		       = 43;	
+const int	SWITCH_RIGHT_KICKER		       = 43;
 const int	SWITCH_LEFT_JET_BUMPER		       = 44;
 const int	SWITCH_RIGHT_JET_BUMPER 	       = 45;
 const int	SWITCH_CENTER_JET_BUMPER	       = 46;

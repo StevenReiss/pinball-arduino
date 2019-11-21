@@ -23,6 +23,7 @@ static unsigned long	shoot_again_limit;
 static unsigned long	next_laser_reset;
 static unsigned long	next_balls_reset;
 static unsigned long	next_start_turn;
+static unsigned long	next_shooter;
 
 static int		gameup_state;
 
@@ -56,6 +57,7 @@ void logicSetup()
    next_laser_reset = 0;
    next_balls_reset = 0;
    next_start_turn = 0;
+   next_shooter = 0;
 }
 
 
@@ -78,6 +80,10 @@ void logicWrap()
    next_logic = 0;
    next_highscore = 0;
    if (next_gameup != 0) next_gameup = LOGIC_GAME_UP_STEP_TIME;
+   if (next_shooter != 0) next_shooter = 1;
+   if (next_laser_reset != 0) next_laser_reset = 1;
+   if (next_balls_reset != 0) next_balls_reset = 1;
+   if (next_start_turn != 0) next_start_turn = 1;
 }
 
 
@@ -139,6 +145,10 @@ static void handleGamePlayLogic(unsigned long now)
 {
    if (now > next_laser_reset) next_laser_reset = 0;
    if (now > next_balls_reset) next_balls_reset = 0;
+   if (now > next_shooter) {
+      next_shooter = addTime(now,LOGIC_NEXT_SHOOTER_UPDATE);
+      handleShooters();
+    }
    if (shoot_again_limit > 0 && now > shoot_again_limit) disableShootAgain();
    if (next_start_turn > 0 && now > next_start_turn) startTurn();
 
@@ -264,7 +274,7 @@ static void idleSwitchOn(int which)
       case SWITCH_CREDIT_BUTTON :
 	 addPlayer();
 	 game_state = GAME_UP;
-	 gameup_state = 6;
+	 gameup_state = 0;
 	 break;
       default :
 	 defaultSwitchOn(which);
@@ -290,11 +300,13 @@ static void gameUpTimer()
       case 4 :
 	 time = (6 - gameup_state) / 2;
 	 setDisplayRight(time);
+	 ++gameup_state;
 	 break;
       case 1 :
       case 3 :
       case 5 :
 	 blankDisplayRight();
+	 ++gameup_state;
 	 break;
       case 6 :
 	 gameUp();
@@ -573,11 +585,19 @@ static void handleShooter(int sw)
 
    int score = 500 + 1000 * game_data.num_stars;
    addPoints(score);
-   if (sw == SWITCH_LEFT_SHOOTER) queueSolenoid(SOLENOID_LEFT_SHOOTER);
-   else queueSolenoid(SOLENOID_RIGHT_SHOOTER);
+   next_shooter = addTime(micros(),LOGIC_SHOOTER_DELAY);
    queueSound(SOUND_GROAN);
 }
 
+
+
+static void handleShooters()
+{
+   if (getSwitch(SWITCH_LEFT_SHOOTER)) queueSolenoid(SOLENOID_LEFT_SHOOTER);
+   else if (getSwitch(SWITCH_RIGHT_SHOOTER)) queueSolenoid(SOLENOID_RIGHT_SHOOTER);
+   else if (getSwitch(SWITCH_EJECT_HOLE)) queueSolenoid(SOLENOID_EJECT_HOLE);
+   else next_shooter = 0;
+}
 
 
 
@@ -780,7 +800,7 @@ static void handleEjectHole()
 {
    if (game_data.is_tilt) return;
 
-   queueSolenoid(SOLENOID_EJECT_HOLE);
+   next_shooter = addTime(micros(),LOGIC_SHOOTER_DELAY);
    addPoints(5000);
    queueSound(SOUND_GROAN);
    incrBonusMult();
@@ -884,7 +904,7 @@ static void endTurn()
       game_data.bonus_mult = 1;
       game_data.laser_score = 0;
       lightOn(LIGHT_BONUS_1K);
-      next_start_turn = addTime(micros(),LOGIC_NEXT_PLAYER_WAIT);
+      next_start_turn = addTime(micros(), LOGIC_NEXT_PLAYER_WAIT);
     }
 }
 
@@ -918,8 +938,18 @@ static void addPoints(int num)
 {
    if (game_data.is_tilt) return;
 
-   game_data.player[num].player_score += num;
+   game_data.player[game_data.current_player].player_score += num;
    updatePlayerInfo();
+}
+
+
+
+static void updatePlayerInfo()
+{
+   int playerid = game_data.current_player;
+   setDisplay(playerid, game_data.player[playerid].player_score);
+   setDisplayRight(game_data.player[playerid].player_balls);
+   checkHighScore();
 }
 
 
@@ -934,15 +964,15 @@ static void resetLASERDropTargets()
 {
    queueSolenoid(SOLENOID_LA_DROP_RESET);
    queueSolenoid(SOLENOID_SER_DROP_RESET);
-   next_laser_reset = addTime(micros(),LOGIC_RESET_TIME);
+   next_laser_reset = addTime(micros(), LOGIC_RESET_TIME);
 }
 
 
 static void resetBALLDropTargets()
 {
    queueSolenoid(SOLENOID_BA_DROP_RESET);
-   queueSolenoid(SOLENOID_LL_DROP_RESET);
-   next_balls_reset = addTime(micros(),LOGIC_RESET_TIME);
+   //	queueSolenoid(SOLENOID_LL_DROP_RESET);		   // these are wired together
+   next_balls_reset = addTime(micros(), LOGIC_RESET_TIME);
 }
 
 
@@ -967,7 +997,7 @@ static void handleLDropTargetSeries()
 {
    queueSound(SOUND_THROB);
    if (game_data.laser_score < 20000) {
-      switch(game_data.laser_score) {
+      switch (game_data.laser_score) {
 	 case 5000 :
 	    lightOn(LIGHT_LASER_10K);
 	    break;
@@ -1046,15 +1076,6 @@ static void addPlayer()
       updateCredits();
       queueSound(SOUND_BLAST);
     }
-}
-
-
-
-static void updatePlayerInfo()
-{
-   int playerid = game_data.current_player;
-   setDisplay(playerid, game_data.player[playerid].player_score);
-   setDisplayRight(game_data.player[playerid].player_balls);
 }
 
 
@@ -1152,7 +1173,6 @@ static void localWriteHighScore(long score)
 
 static void checkHighScore()
 {
-
    long score = game_data.player[game_data.current_player].player_score;
    if (score >= game_data.high_score) {
       game_data.high_score = score;
