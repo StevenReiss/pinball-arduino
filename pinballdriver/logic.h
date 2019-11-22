@@ -32,6 +32,8 @@ const long LOGIC_SHOOT_AGAIN_TIME = 8000000;
 const long LOGIC_NEXT_PLAYER_WAIT = 500000;
 const long LOGIC_NEXT_SHOOTER_UPDATE = 5000000;
 const long LOGIC_SHOOTER_DELAY = 500000;
+const long LOGIC_NEXT_RELEASE_UPDATE = 5000000;
+const long LOGIC_RELEASE_DELAY = 500000;
 
 const long LOGIC_RESET_TIME = 150000;
 
@@ -269,7 +271,7 @@ const int	SOUND_DING4			= 4;
 const int	SOUND_DEATH			= 5;
 const int	SOUND_SPINNER			= 6;
 const int	SOUND_THROB			= 7;
-const int	SOUND_BLAST			= 9;
+const int	SOUND_BLAST			= 8;
 
 
 

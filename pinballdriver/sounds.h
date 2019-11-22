@@ -32,7 +32,7 @@ const int SOUND_PIN_ALTERNATE_SET = SOUND_PLAY_PWM_PIN;         // We didn't wir
 /*										*/
 /********************************************************************************/
 
-const int NUM_SOUND = 8;
+const int NUM_SOUND = 9;
 
 const int SOUND_QUEUE_SIZE = NUM_SOUND*4;
 

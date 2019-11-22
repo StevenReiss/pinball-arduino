@@ -24,6 +24,7 @@ static unsigned long	next_laser_reset;
 static unsigned long	next_balls_reset;
 static unsigned long	next_start_turn;
 static unsigned long	next_shooter;
+static unsigned long	next_release;
 
 static int		gameup_state;
 
@@ -58,6 +59,7 @@ void logicSetup()
    next_balls_reset = 0;
    next_start_turn = 0;
    next_shooter = 0;
+   next_release = 0;
 }
 
 
@@ -81,6 +83,7 @@ void logicWrap()
    next_highscore = 0;
    if (next_gameup != 0) next_gameup = LOGIC_GAME_UP_STEP_TIME;
    if (next_shooter != 0) next_shooter = 1;
+   if (next_release != 0) next_release = 1;
    if (next_laser_reset != 0) next_laser_reset = 1;
    if (next_balls_reset != 0) next_balls_reset = 1;
    if (next_start_turn != 0) next_start_turn = 1;
@@ -145,9 +148,13 @@ static void handleGamePlayLogic(unsigned long now)
 {
    if (now > next_laser_reset) next_laser_reset = 0;
    if (now > next_balls_reset) next_balls_reset = 0;
-   if (now > next_shooter) {
+   if (next_shooter != 0 && now > next_shooter) {
       next_shooter = addTime(now,LOGIC_NEXT_SHOOTER_UPDATE);
-      handleShooters();
+      doShooters();
+    }
+   if (next_release != 0 && now > next_release) {
+      next_release = addTime(now,LOGIC_NEXT_RELEASE_UPDATE);
+      doBallRelease();
     }
    if (shoot_again_limit > 0 && now > shoot_again_limit) disableShootAgain();
    if (next_start_turn > 0 && now > next_start_turn) startTurn();
@@ -591,12 +598,20 @@ static void handleShooter(int sw)
 
 
 
-static void handleShooters()
+static void doShooters()
 {
    if (getSwitch(SWITCH_LEFT_SHOOTER)) queueSolenoid(SOLENOID_LEFT_SHOOTER);
    else if (getSwitch(SWITCH_RIGHT_SHOOTER)) queueSolenoid(SOLENOID_RIGHT_SHOOTER);
    else if (getSwitch(SWITCH_EJECT_HOLE)) queueSolenoid(SOLENOID_EJECT_HOLE);
    else next_shooter = 0;
+}
+
+
+
+static void doBallRelease()
+{
+   if (getSwitch(SWITCH_OUTHOLE)) queueSolenoid(SOLENOID_BALL_RELEASE);
+   else next_release = 0;
 }
 
 
@@ -839,14 +854,15 @@ static void handleSDTStandup()
 
 static void handleOutHole()
 {
-   if (shoot_again_limit > 0 && micros() < shoot_again_limit) {
-      queueSolenoid(SOLENOID_BALL_RELEASE);
+   long now = micros();
+   if (shoot_again_limit > 0 && now < shoot_again_limit) {
+      next_release = addTime(now,LOGIC_RELEASE_DELAY);
       disableShootAgain();
       addPoints(10);
     }
    else if (game_data.free_balls > 0) {
       --game_data.free_balls;
-      queueSolenoid(SOLENOID_BALL_RELEASE);
+      next_release = addTime(now,LOGIC_RELEASE_DELAY);
       addPoints(10);
       if (game_data.free_balls == 0) disableShootAgain();
     }
@@ -1104,7 +1120,7 @@ static void ballOutOfPlay()
 
 static void releaseBall()
 {
-   queueSolenoid(SOLENOID_BALL_RELEASE);
+   next_release = addTime(micros(),LOGIC_RELEASE_DELAY);
    lightOn(LIGHT_SHOOT_AGAIN);
    lightOn(LIGHT_SHOOT_AGAIN_BACK);
    shoot_again_limit = addTime(micros(), LOGIC_SHOOT_AGAIN_TIME);
