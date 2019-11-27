@@ -23,6 +23,19 @@ const byte SWITCH_KNOWN = 100;
 
 
 
+
+/********************************************************************************/
+/*										*/
+/*	Forward Definitions							*/
+/*										*/
+/********************************************************************************/
+
+static void handleSelect(void);
+static void handleRead(void);
+
+
+
+
 /********************************************************************************/
 /*										*/
 /*	Switch access methods							*/
@@ -146,7 +159,6 @@ static void handleSelect()
    writeBit(SWITCH_PIN_SELECT0,switch_col,0);
    writeBit(SWITCH_PIN_SELECT1,switch_col,1);
    writeBit(SWITCH_PIN_SELECT2,switch_col,2);
-
 }
 
 
@@ -165,15 +177,15 @@ static void handleRead()
 	    if (switch_count[swno] < SWITCH_BOUNCE_CYCLES) ++switch_count[swno];
        }
       else {
-//        Serial.print("SWITCH CHANGE ");
-//        Serial.print(cbase);
-//        Serial.print(" ");
-//        Serial.print(rnum);
-//        Serial.print(" ");
-//        Serial.print(swno);
-//        Serial.print(" ");
-//        Serial.print(val);
-//        Serial.println();
+	 //	   Serial.print("SWITCH CHANGE ");
+	 //	   Serial.print(cbase);
+	 //	   Serial.print(" ");
+	 //	   Serial.print(rnum);
+	 //	   Serial.print(" ");
+	 //	   Serial.print(swno);
+	 //	   Serial.print(" ");
+	 //	   Serial.print(val);
+	 //	   Serial.println();
 	 switch_value[swno] = val;
 	 switch_count[swno] = 1;
        }

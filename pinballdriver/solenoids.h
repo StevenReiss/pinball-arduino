@@ -52,7 +52,7 @@ extern void removeAllSolenoids();
 extern void solenoidsSetup();
 extern void solenoidsWrap();
 extern void solenoidsUpdate(unsigned long);
-
+extern void solenoidsReset(void);
 
 
 /* end of solenoids.h */

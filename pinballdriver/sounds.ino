@@ -33,10 +33,26 @@ static unsigned long play_time[NUM_SOUND] = {
    250000,			// DING3
    250000,			// DING4
    3000000,			// DEATH
-   1000000,			// SPINNER
-   250000,			// THROB
+   1000000,			// THROB
+   250000,			// SPINNER
    250000			// BLAST
 };
+
+
+
+/********************************************************************************/
+/*										*/
+/*	Forward Definitions							*/
+/*										*/
+/********************************************************************************/
+
+static void soundPlaySetup(void);
+static void turnOffSound(void);
+static void turnOnSound(void);
+static void playCheck(void);
+static void fastpwmStart(void);
+static void fastpwmStop(void);
+static void fastpwmPlay(unsigned char *,int);
 
 
 
@@ -86,7 +102,7 @@ void soundsSetup()
 
 
 
-void soundPlaySetup()
+static void soundPlaySetup()
 {
    play_counter = 0;
    play_max = 0;
@@ -152,8 +168,9 @@ static void turnOffSound()
 
 static void turnOnSound()
 {
-   int which = sound_queue[sound_start];
+   int sound = sound_queue[sound_start];
    sound_start = (sound_start + 1) % SOUND_QUEUE_SIZE;
+   int which = sound;
 
    if (which >= 5) {
       digitalWrite(SOUND_PIN_ALTERNATE_SET,HIGH);
@@ -167,6 +184,9 @@ static void turnOnSound()
    writeBit(SOUND_PIN_SELECT1,which,1);
    writeBit(SOUND_PIN_SELECT2,which,2);
    digitalWrite(SOUND_PIN_DRIVER,HIGH);
+
+   Serial.print("PLAY SOUND ");
+   Serial.println(sound);
 
    sound_on = true;
    cur_sound = which;

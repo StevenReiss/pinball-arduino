@@ -34,7 +34,18 @@ static bool		is_testing;
 static byte		test_down;
 static byte		reset_down;
 static volatile int	watchdog_counter;
-static boolean          default_testing = true;
+static boolean		default_testing = false;
+
+
+/********************************************************************************/
+/*										*/
+/*	Forward definitions							*/
+/*										*/
+/********************************************************************************/
+
+static void checkControlSwitches(void);
+static void setupWatchdog(void);
+static void watchdogReset(void);
 
 
 
@@ -163,10 +174,10 @@ static void checkControlSwitches()
       int sts = digitalRead(TEST_PIN);
 
       if (sts == LOW) {
-         ++test_down;
+	 ++test_down;
        }
       else if (test_down >= TEST_DOWN_CYCLES) {
-         Serial.println("START TESTING");
+	 Serial.println("START TESTING");
 	 test_down = 0;
 	 is_testing = true;
 	 reset();
@@ -175,20 +186,20 @@ static void checkControlSwitches()
 	 test_down = 0;
        }
       else {
-        if (Serial.available() > 0) {
-           int input = Serial.read();
-           Serial.print("SERIAL IN "); 
-           Serial.println(input);
-           switch (input) {
-              case 't' :
-              case 'T' :
-                is_testing = true;
-                reset();
-                break;
-           }
-        }
+	if (Serial.available() > 0) {
+	   int input = Serial.read();
+	   Serial.print("SERIAL IN ");
+	   Serial.println(input);
+	   switch (input) {
+	      case 't' :
+	      case 'T' :
+		is_testing = true;
+		reset();
+		break;
+	   }
+	}
       }
-        
+
     }
 
    int sts = digitalRead(SOFT_RESET_PIN);
@@ -297,7 +308,7 @@ void __wrap_system_restart_local()
       return;
     }
 
-   
+
    reset();
 
    Serial.print("HARD RESET ");

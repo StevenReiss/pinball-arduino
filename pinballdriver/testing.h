@@ -60,5 +60,22 @@ struct DeltaTimer {
 typedef struct DeltaTimer * DeltaTimerP;
 
 
+/********************************************************************************/
+/*										*/
+/*	External entries							*/
+/*										*/
+/********************************************************************************/
+
+extern void testingSetup(void);
+extern void testingWrap(void);
+extern void testingUpdate(unsigned long);
+extern void tetsingReset(void);
+extern void setupDeltaTimer(DeltaTimerP,const char *,int);
+extern void deltaTimer(DeltaTimerP);
+
+
+
+
 
 /* end of testing.h */
+

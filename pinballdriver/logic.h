@@ -28,12 +28,12 @@ const long LOGIC_UPDATE = 10000;
 
 const long LOGIC_HIGH_SCORE_DISPLAY_TIME = 1000000;
 const long LOGIC_GAME_UP_STEP_TIME = 500000;
-const long LOGIC_SHOOT_AGAIN_TIME = 8000000;
+const long LOGIC_SHOOT_AGAIN_TIME = 10000000;
 const long LOGIC_NEXT_PLAYER_WAIT = 500000;
 const long LOGIC_NEXT_SHOOTER_UPDATE = 5000000;
 const long LOGIC_SHOOTER_DELAY = 500000;
-const long LOGIC_NEXT_RELEASE_UPDATE = 5000000;
-const long LOGIC_RELEASE_DELAY = 500000;
+const long LOGIC_NEXT_RELEASE_UPDATE = 8000000;
+const long LOGIC_RELEASE_DELAY = 2000000;
 
 const long LOGIC_RESET_TIME = 150000;
 
@@ -209,7 +209,7 @@ const int	SWITCH_LEFT_INSIDE_ROLLOVER	       = 11;
 const int	SWITCH_LEFT_KICKER		       = 12;
 const int	SWITCH_MIDDLE_LEFT_SIDE_STANDUP        = 13;
 const int	SWITCH_LEFT_SIDE_TARGET 	       = 14;
-const int	SWITCH_UNUSED			       = 15;
+const int	SWITCH_ADVANCE_BONUS		       = 15;
 const int	SWITCH_LEFT_SPINNER		       = 16;
 const int	SWITCH_BULLS_EYE_TARGET 	       = 17;
 const int	SWITCH_LASER_L_DROP_TARGET	       = 18;
@@ -268,10 +268,25 @@ const int	SOUND_DING1			= 1;
 const int	SOUND_DING2			= 2;
 const int	SOUND_DING3			= 3;
 const int	SOUND_DING4			= 4;
-const int	SOUND_DEATH			= 5;
-const int	SOUND_SPINNER			= 6;
-const int	SOUND_THROB			= 7;
+const int	SOUND_PHEW			= 5;
+const int	SOUND_THROB			= 6;
+const int	SOUND_SPINNER			= 7;
 const int	SOUND_BLAST			= 8;
+
+		
+
+
+/********************************************************************************/
+/*										*/
+/*	External definitions							*/
+/*										*/
+/********************************************************************************/
+
+extern void logicSetup(void);
+extern void logicWrap(void);
+extern void logicUpdate(unsigned long);
+extern void logicReset(void);
+
 
 
 

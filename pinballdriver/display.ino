@@ -38,6 +38,21 @@ static int work_display;
 
 /********************************************************************************/
 /*										*/
+/*	Forward definitions							*/
+/*										*/
+/********************************************************************************/
+
+static void updateTask(void);
+static byte getDigits(long,byte []);
+static void getDisplayDigits(int);
+static void getSplitDisplayDigits(void);
+static void setTask(void);
+
+
+
+
+/********************************************************************************/
+/*										*/
 /*	Display access methods							*/
 /*										*/
 /********************************************************************************/
@@ -196,13 +211,18 @@ void displayReset()
 /*										*/
 /********************************************************************************/
 
-void updateTask()
+static void updateTask()
 {
    for (int i = 0; i < NUM_DISPLAY; ++i) {
       if (i == DISPLAY_SPLIT) continue;
       if (need_digits[i]) {
 	 getDisplayDigits(i);
 	 need_digits[i] = false;
+	 //	   Serial.print("GET DIGITS ");
+	 //	   Serial.print(display_value[i]);
+	 //	   Serial.print(" ");
+	 //	   Serial.println(i);
+
        }
       long v = display_value[i];
       if (v < 0) {
@@ -211,6 +231,7 @@ void updateTask()
 	 bit_values[i][2] = 0;
 	 continue;
        }
+
       int j = display_digit_count[i];
       byte * digits = display_digits[i];
       for (int k = 0; k < 3; ++k) {
@@ -225,15 +246,18 @@ void updateTask()
        }
     }
 
-//   Serial.print(display_value[0]);
-//   Serial.print(" ");
-//   Serial.print(bit_values[0][0],BIN);
-//   Serial.print(" ");
-//   Serial.print(bit_values[0][1],BIN);
-//   Serial.print(" ");
-//   Serial.print(bit_values[0][2],BIN);
-//   Serial.println();
-     
+   //	Serial.print("CHECK ");
+   //	Serial.print(display_digit_count[0]);
+   //	Serial.print(" ");
+   //	Serial.print(display_value[0]);
+   //	Serial.print(" ");
+   //	Serial.print(bit_values[0][0],BIN);
+   //	Serial.print(" ");
+   //	Serial.print(bit_values[0][1],BIN);
+   //	Serial.print(" ");
+   //	Serial.print(bit_values[0][2],BIN);
+   //	Serial.println();
+
    if (need_digits[DISPLAY_SPLIT]) {
       getSplitDisplayDigits();
       need_digits[DISPLAY_SPLIT] = false;
@@ -248,6 +272,21 @@ void updateTask()
     }
 }
 
+
+
+static byte getDigits(long v,byte digits[])
+{
+   if (v < 0) return 0;
+
+   byte j = 0;
+   while (v > 0) {
+      digits[j++] = v % 10;
+      v = v / 10;
+    }
+   if (j == 0) digits[j++] = 0;
+
+   return j;
+}
 
 
 static void getDisplayDigits(int dis)
@@ -271,23 +310,6 @@ static void getSplitDisplayDigits()
 
 
 
-static byte getDigits(int v,byte digits[])
-{
-   if (v < 0) return 0;
-
-   byte j = 0;
-   while (v > 0) {
-      digits[j++] = v % 10;
-      v = v / 10;
-    }
-   if (j == 0) digits[j++] = 0;
-
-   return j;
-}
-
-
-
-
 
 /********************************************************************************/
 /*										*/
@@ -295,7 +317,7 @@ static byte getDigits(int v,byte digits[])
 /*										*/
 /********************************************************************************/
 
-void setTask()
+static void setTask()
 {
    //	int t0 = micros();
 
@@ -311,8 +333,8 @@ void setTask()
    for (int disp = 0; disp < NUM_DISPLAY; ++disp) {
       int j = disp + 1;
 
-//      digitalWrite(DISPLAY_DATA_PIN,LOW);
-//      digitalWrite(DISPLAY_DATA2_PIN,LOW);
+      //      digitalWrite(DISPLAY_DATA_PIN,LOW);
+      //      digitalWrite(DISPLAY_DATA2_PIN,LOW);
       digitalWrite(DISPLAY_LATCH_PIN,LOW);
       writeBit(DISPLAY_CLOCK_MPX0_PIN,j,0);
       writeBit(DISPLAY_CLOCK_MPX1_PIN,j,1);
@@ -321,6 +343,10 @@ void setTask()
       long val = bit_values[disp][idx];
       long bitv = 0x8000;
       long lowv = 0x80;
+      //      Serial.print("DISP ");
+      //      Serial.print(disp);
+      //      Serial.print(" ");
+      //      Serial.println(val);
       for (int i = 7; i >= 0; --i) {
 	 digitalWrite(DISPLAY_CLOCK_PIN,LOW);
 	 if ((val & bitv) != 0) digitalWrite(DISPLAY_DATA2_PIN,HIGH);

@@ -29,6 +29,77 @@ static unsigned long	next_release;
 static int		gameup_state;
 
 
+/********************************************************************************/
+/*										*/
+/*	Forward definitions							*/
+/*										*/
+/********************************************************************************/
+
+static void initPlayer(int);
+static void handleIdleLogic(unsigned long);
+static void handleGameUpLogic(unsigned long);
+static void handleGamePlayLogic(unsigned long);
+static void defaultSwitchOff(int);
+static void defaultSwitchOn(int);
+static void gameOver(void);
+static void highScoreDisplay(void);
+static void idleSwityhOff(int);
+static void idleSwitchOn(int);
+static void gameUpTimer(void);
+static void gameUp(void);
+static void gameupSwitchOn(int);
+static void gameupSwitchOff(int);
+static void startTurn();
+static void gamePlaySwitchOn(int);
+static void gamePlaySwitchOff(int);
+static void incrBonusMult(void);
+static void incrBonus(void);
+static void handleShooter(int);
+static void doShooters(void);
+static void doBallRelease(void);
+static void handleAdvanceBonus(void);
+static void handleStar(int);
+static void handleSpecial(void);
+static void handleInsideRollover(void);
+static void handleKicker(void);
+static void handleMLSStandup(void);
+static void handleLSTarget(void);
+static void handleSpinner(void);
+static void handleBETarget(void);
+static void handleDropTarget(void);
+static void handleRollover(int);
+static void hadnleTopStandup(void);
+static void handleEjectHole(void);
+static void handleBDTStandup(void);
+static void handleJetBumper(void);
+static void handleSDTStandup(void);
+static void handleOutHole(void);
+static void endTurn(void);
+static void disableShootAgain(void);
+static void blankScores(void);
+static void addPoints(int);
+static void updatePlayerInfo(void);
+static void resetLASERDropTargets(void);
+static void resetBALLDropTargets(void);
+static void handleLASERDropTarget(void);
+static void handleBALLDropTarget(void);
+static void handleLDropTargetSeries(void);
+static void handleBDropTargetSeries(void);
+static void updateCredits(void);
+static void addCredit(void);
+static void addPlayer(void);
+static void ballInPlay(void);
+static void ballOutOfPlay(void);
+static void releaseBall(void);
+static void tilt(void);
+static void readHighScore(void);
+static void noteHighScore(void);
+static void resetHighScore(void);
+static void localWriteHighScore(long);
+static bool insertStar(int);
+static void resetStars(void);
+static bool insertRollover(int);
+static void resetRollovers(void);
 
 
 /********************************************************************************/
@@ -175,14 +246,14 @@ void logicReset()
 /*										*/
 /********************************************************************************/
 
-void defaultSwitchOff(int sw)
+static void defaultSwitchOff(int sw)
 {
    // nothing to do
 }
 
 
 
-void defaultSwitchOn(int sw)
+static void defaultSwitchOn(int sw)
 {
    switch (sw) {
       case SWITCH_HIGH_SCORE_RESET :
@@ -201,7 +272,7 @@ void defaultSwitchOn(int sw)
 /*										*/
 /********************************************************************************/
 
-void gameOver()
+static void gameOver()
 {
    disableAllLights();
    removeAllSolenoids();
@@ -237,12 +308,14 @@ void gameOver()
 
    ballOutOfPlay();
 
+   Serial.println("GAME OVER");
+
    game_state = GAME_IDLE;
    next_highscore = 0;
 }
 
 
-void highScoreDisplay()
+static void highScoreDisplay()
 {
    static int lastdisplay = 3;
    int which = 0;
@@ -479,6 +552,10 @@ static void gamePlaySwitchOn(int which)
 	 handleBALLDropTarget();
 	 break;
 
+      case SWITCH_ADVANCE_BONUS :
+	 handleAdvanceBonus();
+	 break;
+
       default :
 	 defaultSwitchOn(which);
     }
@@ -584,8 +661,6 @@ static void incrBonus()
 
 
 
-
-
 static void handleShooter(int sw)
 {
    if (game_data.is_tilt) return;
@@ -593,7 +668,7 @@ static void handleShooter(int sw)
    int score = 500 + 1000 * game_data.num_stars;
    addPoints(score);
    next_shooter = addTime(micros(),LOGIC_SHOOTER_DELAY);
-   queueSound(SOUND_GROAN);
+   queueSound(SOUND_PHEW);
 }
 
 
@@ -610,8 +685,21 @@ static void doShooters()
 
 static void doBallRelease()
 {
-   if (getSwitch(SWITCH_OUTHOLE)) queueSolenoid(SOLENOID_BALL_RELEASE);
+   if (getSwitch(SWITCH_OUTHOLE)) {
+      shoot_again_limit = addTime(micros(), LOGIC_SHOOT_AGAIN_TIME);
+      queueSolenoid(SOLENOID_BALL_RELEASE);
+    }
    else next_release = 0;
+}
+
+
+
+
+static void handleAdvanceBonus()
+{
+   incrBonus();
+   queueSound(SOUND_DING1);
+   queueSound(SOUND_DING2);	
 }
 
 
@@ -623,6 +711,10 @@ static void handleStar(int sw)
    int star = sw - SWITCH_STAR_1_ROLLOVER;
    int light = LIGHT_STAR_1 + star;
    if (insertStar(star)) {
+      Serial.print("STAR ");
+      Serial.print(star);
+      Serial.print(" ");
+      Serial.println(light);
       lightOn(light);
     }
    queueSound(SOUND_DING1);
@@ -817,7 +909,7 @@ static void handleEjectHole()
 
    next_shooter = addTime(micros(),LOGIC_SHOOTER_DELAY);
    addPoints(5000);
-   queueSound(SOUND_GROAN);
+   queueSound(SOUND_SPINNER);
    incrBonusMult();
 }
 
@@ -881,7 +973,7 @@ static void handleOutHole()
 
 static void endTurn()
 {
-   queueSound(SOUND_DEATH);
+   queueSound(SOUND_GROAN);
    // setGameUp(DISABLED);
    ballOutOfPlay();
    game_data.player[game_data.current_player].player_balls--;
@@ -1123,7 +1215,6 @@ static void releaseBall()
    next_release = addTime(micros(),LOGIC_RELEASE_DELAY);
    lightOn(LIGHT_SHOOT_AGAIN);
    lightOn(LIGHT_SHOOT_AGAIN_BACK);
-   shoot_again_limit = addTime(micros(), LOGIC_SHOOT_AGAIN_TIME);
    ballInPlay();
 }
 
@@ -1247,5 +1338,6 @@ static void resetRollovers()
 
 
 /* end of logic.ino */
+
 
 

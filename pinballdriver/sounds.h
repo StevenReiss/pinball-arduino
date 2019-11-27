@@ -22,7 +22,7 @@ const int SOUND_PLAY_PWM_PIN = 12;
 const int SOUND_PLAY_ALT_PWM_PIN = 11;
 
 // const int SOUND_PIN_ALTERNATE_SET = SOUND_PIN_START + 8;
-const int SOUND_PIN_ALTERNATE_SET = SOUND_PLAY_PWM_PIN;         // We didn't wire the ALTERNATE PIN, use pwm for now
+const int SOUND_PIN_ALTERNATE_SET = SOUND_PLAY_PWM_PIN; 	// We didn't wire the ALTERNATE PIN, use pwm for now
 
 
 
@@ -59,7 +59,7 @@ extern void queueSound(int);
 extern void soundsSetup();
 extern void soundsWrap();
 extern void soundsUpdate(unsigned long);
-
+extern void soundsReset(void);
 
 
 

@@ -34,6 +34,39 @@ struct DeltaTimer	loop_timer;
 
 
 
+/********************************************************************************/
+/*										*/
+/*	Forward definitions							*/
+/*										*/
+/********************************************************************************/
+
+static void testingStart(void);
+static void checkTestSwitches(void);
+static void checkSerial(void);
+static void nextTestMode(void);
+static void updateTestMode(void);
+static void setTestIdle(void);
+static void endCurrentTest(void);
+static void testSwitchOff(int);
+static void testSwitchOn(int);
+static void startSolenoidTest(void);
+static void endSolenoidTest(void);
+static void nextSolenoidTest(void);
+static void startSoundTest(void);
+static void endSoundTest(void);
+static void nextSoundTest(void);
+static void startLightTest(void);
+static void endLightTest(void);
+static void nextLightTest(void);
+static void randomizeLights(void);
+static void displayCount(void);
+static void startSpecialTest(void);
+static void endSpecialTest(void);
+static void nextSpecialTest(void);
+static void deltaTimerReport(DeltaTimerP);
+
+
+
 
 /********************************************************************************/
 /*										*/
@@ -143,7 +176,7 @@ void testingUpdate(unsigned long now)
       randomizeLights();
       next_light_change = addTime(now,TEST_LIGHT_RANDOMIZE);
     }
-    
+
    checkSerial();
 }
 
@@ -243,10 +276,10 @@ static void checkSerial()
 	 startSpecialTest();
 	 break;
       case 'R' :
-         default_testing = false;
-         reset();
-         setup();
-         break;
+	 default_testing = false;
+	 reset();
+	 setup();
+	 break;
       default :
 	 break;
     }
@@ -273,9 +306,9 @@ static void nextTestMode()
       case TEST_LIGHTS :
 	 ++test_counter;
 	 if (test_counter < NUM_LIGHTS) {
-//                next_test_check = 0;
-	        return;
-	 }
+	    //		      next_test_check = 0;
+	    return;
+	  }
 	 disableAllLights();
 	 break;
       case TEST_SPECIALS :
@@ -332,11 +365,14 @@ static void updateTestMode()
 }
 
 
+
 static void setTestIdle()
 {
    test_mode = TEST_IDLE;
    next_test_check = 0;
 }
+
+
 
 static void endCurrentTest()
 {
@@ -358,7 +394,7 @@ static void endCurrentTest()
       case TEST_SPECIALS :
 	 endSpecialTest();
 	 break;
-   }
+    }
 }
 
 
@@ -492,13 +528,15 @@ static void nextLightTest()
 static void randomizeLights()
 {
    if (test_mode == TEST_LIGHTS) return;
-   
+
    disableAllLights();
-   
+
    for (int i = 0; i < NUM_LIGHTS; ++i) {
       if (random(4) == 1) lightOn(i);
     }
 }
+
+
 
 /********************************************************************************/
 /*										*/

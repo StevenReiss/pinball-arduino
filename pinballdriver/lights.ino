@@ -28,6 +28,18 @@ static struct DeltaTimer lamp_timer;
 
 /********************************************************************************/
 /*										*/
+/*	Forward definitions							*/
+/*										*/
+/********************************************************************************/
+
+static void updateRows(void);
+static void updatePulse(void);
+static void setupLightInterrupts(void);
+
+
+
+/********************************************************************************/
+/*										*/
 /*	Light access methods							*/
 /*										*/
 /********************************************************************************/
@@ -190,7 +202,7 @@ static void updateRows()
 static void updatePulse()
 {
    deltaTimer(&lamp_timer);
-   
+
    int row = (start_row + pulse_row) % NUM_LIGHT_ROWS;
    pulse_row = (pulse_row + 1) % LIGHT_NUM_ENABLED_ROW;
 

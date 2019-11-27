@@ -20,19 +20,30 @@ static unsigned long next_solenoid;
 static bool	solenoid_on;
 
 static int solenoid_time[NUM_SOLENOID] = {     // multiples of basic unit (10ms)
-        8,              // BALL_RELEASE
-        3,              // LEFT_SHOOTER
-        6,              // LA_DROP_RESET
-        8,              // SER_DROP_RESET
-        3,              // EJECT HOLE
-        6,              // BA_DROP_RESET
-        6,              // LL_DROP_RESET
-        3,              // RIGHT_SHOOTER
-        1,              // CREDIT_KNOCKER
-        1,              // LASER_LAMPS
-        1               // COIN_LOCKOUT
+	8,		// BALL_RELEASE
+	3,		// LEFT_SHOOTER
+	6,		// LA_DROP_RESET
+	8,		// SER_DROP_RESET
+	3,		// EJECT HOLE
+	6,		// BA_DROP_RESET
+	6,		// LL_DROP_RESET
+	3,		// RIGHT_SHOOTER
+	1,		// CREDIT_KNOCKER
+	1,		// LASER_LAMPS
+	1		// COIN_LOCKOUT
 };
-     
+
+
+/********************************************************************************/
+/*										*/
+/*	Forward Definitions							*/
+/*										*/
+/********************************************************************************/
+
+static void turnOffSolenoid(void);
+static int turnOnSolenoid(void);
+
+
 
 
 /********************************************************************************/
@@ -114,7 +125,8 @@ static void turnOffSolenoid()
 {
    digitalWrite(SOLENOID_PIN_DRIVER,SOLENOID_DRIVER_OFF);
    solenoid_on = false;
-   Serial.println("SOL OFF");
+//   Serial.print("SOL OFF ");
+//   Serial.println(micros());
 }
 
 
@@ -132,7 +144,7 @@ static int turnOnSolenoid()
 
    solenoid_queued &= ~bit;
    solenoid_on = true;
-   
+
    return which0;
 }
 
@@ -150,11 +162,13 @@ void solenoidsUpdate(unsigned long now)
        }
       else {
 	 int which = turnOnSolenoid();
-         unsigned long ontime = SOLENOID_ON_TIME * solenoid_time[which];
-         Serial.print("SOLENOID ON ");
-         Serial.print(which);
-         Serial.print(" ");
-         Serial.println(ontime);
+	 unsigned long ontime = SOLENOID_ON_TIME * solenoid_time[which];
+//	   Serial.print("SOLENOID ON ");
+//	   Serial.print(which);
+//	   Serial.print(" ");
+//	   Serial.print(micros());
+//	   Serial.print(" ");
+//	   Serial.println(ontime);
 	 next_solenoid = addTime(now,ontime);
        }
     }

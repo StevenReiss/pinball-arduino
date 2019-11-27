@@ -22,7 +22,7 @@ const int	NUM_SPECIAL_PINS = 6 + 3 + 1 + 1;
 
 // Pins 18 and 19 are not used
 
-// Pins 11, 12  are reserver for audio output
+// Pins 11, 12	are reserver for audio output
 const int	SOUND_PLAY_PIN_START = 11;
 const int	NUM_SOUND_PLAY_PINS = 2;
 
@@ -88,7 +88,13 @@ const int RESET_DOWN_CYCLES = 3;
 /*										*/
 /********************************************************************************/
 
+extern void reset(void);
+extern void softReset(void);
+
+
 extern unsigned long addTime(unsigned long,unsigned long);
+extern void writeBit(int,int,int);
+
 
 
 /********************************************************************************/

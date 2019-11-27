@@ -93,6 +93,7 @@ const unsigned int DISPLAY_BLANK = 10;
 extern void displaySetup();
 extern void displayUpdate(unsigned long now);
 extern void displayWrap();
+extern void displayReset();
 
 extern void blankDisplay(int i);
 extern void setDisplay(int i,long v);
@@ -100,6 +101,7 @@ extern void setDisplayLeft(int i);
 extern void setDisplayRight(int i);
 extern void blankDisplayLeft(int i);
 extern void blankDisplayRight(int i);
+
 
 
 
