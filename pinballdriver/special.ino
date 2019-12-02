@@ -159,8 +159,8 @@ static void checkSwitch(unsigned long now)
       if (sts == SPECIAL_ON) {
 	 if (special_switch != spec) {
 	      if (is_testing) {
-	       Serial.print("DETECT SPECIAL ");
-	       Serial.println(spec);
+	        Serial.print("DETECT SPECIAL ");
+	        Serial.println(spec);
 	      }
 	    special_switch = spec;
 	    if (!special_disable) turnOnSpecialSolenoid(spec,now);
@@ -185,7 +185,7 @@ static void checkOffSwitch()
 
 static void removeSpecialSolenoid()
 {
-   if (!special_disable) Serial.println("SPECIAL SOLENOID OFF");
+//   if (!special_disable) Serial.println("SPECIAL SOLENOID OFF");
    digitalWrite(SPECIAL_PIN_DRIVER,LOW);
    next_special_off = 0;
    special_switch = NO_SPECIAL;

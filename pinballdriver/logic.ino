@@ -23,6 +23,7 @@ static unsigned long	shoot_again_limit;
 static unsigned long	next_laser_reset;
 static unsigned long	next_balls_reset;
 static unsigned long	next_start_turn;
+static unsigned long    next_end_game;
 static unsigned long	next_shooter;
 static unsigned long	next_release;
 
@@ -87,7 +88,7 @@ static void handleLDropTargetSeries(void);
 static void handleBDropTargetSeries(void);
 static void updateCredits(void);
 static void addCredit(void);
-static void addPlayer(void);
+static bool addPlayer(void);
 static void ballInPlay(void);
 static void ballOutOfPlay(void);
 static void releaseBall(void);
@@ -131,6 +132,7 @@ void logicSetup()
    next_start_turn = 0;
    next_shooter = 0;
    next_release = 0;
+   next_end_game = 0;
 }
 
 
@@ -158,6 +160,7 @@ void logicWrap()
    if (next_laser_reset != 0) next_laser_reset = 1;
    if (next_balls_reset != 0) next_balls_reset = 1;
    if (next_start_turn != 0) next_start_turn = 1;
+   if (next_end_game != 0) next_end_game = 1;
 }
 
 
@@ -229,6 +232,7 @@ static void handleGamePlayLogic(unsigned long now)
     }
    if (shoot_again_limit > 0 && now > shoot_again_limit) disableShootAgain();
    if (next_start_turn > 0 && now > next_start_turn) startTurn();
+   if (next_end_game > 0 && now > next_end_game) gameOver();
 
    handleSwitchChanges(4, gamePlaySwitchOff, gamePlaySwitchOn);
 }
@@ -308,7 +312,7 @@ static void gameOver()
 
    ballOutOfPlay();
 
-   Serial.println("GAME OVER");
+//   Serial.println("GAME OVER");
 
    game_state = GAME_IDLE;
    next_highscore = 0;
@@ -352,9 +356,10 @@ static void idleSwitchOn(int which)
 {
    switch (which) {
       case SWITCH_CREDIT_BUTTON :
-	 addPlayer();
-	 game_state = GAME_UP;
-	 gameup_state = 0;
+	 if (addPlayer()) {
+	    game_state = GAME_UP;
+	    gameup_state = 0;
+	  }
 	 break;
       default :
 	 defaultSwitchOn(which);
@@ -417,9 +422,10 @@ static void gameupSwitchOn(int which)
 {
    switch (which) {
       case SWITCH_CREDIT_BUTTON :
-	 addPlayer();
-	 game_state = GAME_UP;
-	 gameup_state = 0;
+	 if(addPlayer()) {
+	    game_state = GAME_UP;
+	    gameup_state = 0;
+	  }
 	 break;
       default :
 	 defaultSwitchOn(which);
@@ -438,6 +444,7 @@ static void gameupSwitchOff(int which)
 static void startTurn()
 {
    next_start_turn = 0;
+   game_data.is_tilt = false;
    game_state = GAME_PLAY;
    updatePlayerInfo();
    checkHighScore();
@@ -694,7 +701,6 @@ static void doBallRelease()
 
 
 
-
 static void handleAdvanceBonus()
 {
    incrBonus();
@@ -711,10 +717,10 @@ static void handleStar(int sw)
    int star = sw - SWITCH_STAR_1_ROLLOVER;
    int light = LIGHT_STAR_1 + star;
    if (insertStar(star)) {
-      Serial.print("STAR ");
-      Serial.print(star);
-      Serial.print(" ");
-      Serial.println(light);
+//      Serial.print("STAR ");
+//      Serial.print(star);
+//      Serial.print(" ");
+//      Serial.println(light);
       lightOn(light);
     }
    queueSound(SOUND_DING1);
@@ -947,6 +953,13 @@ static void handleSDTStandup()
 static void handleOutHole()
 {
    long now = micros();
+
+   if (game_data.is_tilt) {
+      lightOff(LIGHT_TILT);
+      game_data.is_tilt = false;
+      specialEnable();
+    }
+    
    if (shoot_again_limit > 0 && now < shoot_again_limit) {
       next_release = addTime(now,LOGIC_RELEASE_DELAY);
       disableShootAgain();
@@ -993,7 +1006,8 @@ static void endTurn()
        }
     }
    if (next < 0) {
-      gameOver();
+      next_end_game = addTime(micros(),LOGIC_END_GAME_DELAY);
+//      gameOver();
     }
    else {
       game_data.current_player = next;
@@ -1171,10 +1185,10 @@ static void addCredit()
 /*										*/
 /********************************************************************************/
 
-static void addPlayer()
+static bool addPlayer()
 {
    int num = game_data.num_players;
-   if (num >= NUM_PLAYER) return;
+   if (num >= NUM_PLAYER) return false;
    if (game_data.game_credits > 0) {
       game_data.player[num].player_score = 0;
       game_data.player[num].player_balls = 3;
@@ -1183,7 +1197,10 @@ static void addPlayer()
       --game_data.game_credits;
       updateCredits();
       queueSound(SOUND_BLAST);
+      return true;
     }
+    
+   return false;
 }
 
 

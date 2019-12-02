@@ -185,8 +185,8 @@ static void turnOnSound()
    writeBit(SOUND_PIN_SELECT2,which,2);
    digitalWrite(SOUND_PIN_DRIVER,HIGH);
 
-   Serial.print("PLAY SOUND ");
-   Serial.println(sound);
+//   Serial.print("PLAY SOUND ");
+//   Serial.println(sound);
 
    sound_on = true;
    cur_sound = which;

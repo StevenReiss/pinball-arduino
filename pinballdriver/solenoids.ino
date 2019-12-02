@@ -24,7 +24,7 @@ static int solenoid_time[NUM_SOLENOID] = {     // multiples of basic unit (10ms)
 	3,		// LEFT_SHOOTER
 	6,		// LA_DROP_RESET
 	8,		// SER_DROP_RESET
-	3,		// EJECT HOLE
+	4,		// EJECT HOLE
 	6,		// BA_DROP_RESET
 	6,		// LL_DROP_RESET
 	3,		// RIGHT_SHOOTER
