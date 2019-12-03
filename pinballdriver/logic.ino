@@ -320,8 +320,6 @@ static void gameOver()
 
    ballOutOfPlay();
 
-//   Serial.println("GAME OVER");
-
    game_state = GAME_IDLE;
    next_highscore = 0;
 }
@@ -731,10 +729,6 @@ static void handleStar(int sw)
    int star = sw - SWITCH_STAR_1_ROLLOVER;
    int light = LIGHT_STAR_1 + star;
    if (insertStar(star)) {
-//      Serial.print("STAR ");
-//      Serial.print(star);
-//      Serial.print(" ");
-//      Serial.println(light);
       lightOn(light);
     }
    queueSound(SOUND_DING1);
