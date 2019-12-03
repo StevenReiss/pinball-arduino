@@ -243,7 +243,9 @@ static void handleGamePlayLogic(unsigned long now)
 
 
 void logicReset()
-{ }
+{ 
+}
+
 
 
 
@@ -282,6 +284,8 @@ static void defaultSwitchOn(int sw)
 
 static void gameOver()
 {
+   next_end_game = 0;
+   
    disableAllLights();
    removeAllSolenoids();
    specialDisable();
@@ -969,7 +973,7 @@ static void handleOutHole()
       game_data.is_tilt = false;
       specialEnable();
     }
-    
+
    if (shoot_again_limit > 0 && now < shoot_again_limit) {
       next_release = addTime(now,LOGIC_RELEASE_DELAY);
       disableShootAgain();
