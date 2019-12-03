@@ -32,7 +32,7 @@ const int NUM_SOLENOID = 11;
 const int FIRST_SOLENOID = 1;
 
 const long SOLENOID_ON_TIME = 10000;		// Basic unit -- *# for solenoid
-const long SOLENOID_OFF_TIME = 40000;
+const long SOLENOID_OFF_TIME = 60000;
 const long SOLENOID_CHECK_TIME = 5000;
 
 const int SOLENOID_DRIVER_OFF = HIGH;

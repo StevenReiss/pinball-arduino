@@ -26,6 +26,8 @@ static unsigned long	next_start_turn;
 static unsigned long    next_end_game;
 static unsigned long	next_shooter;
 static unsigned long	next_release;
+static int              shooter_count;
+static int              release_count;
 
 static int		gameup_state;
 
@@ -133,6 +135,8 @@ void logicSetup()
    next_shooter = 0;
    next_release = 0;
    next_end_game = 0;
+   shooter_count = 0;
+   release_count = 0;
 }
 
 
@@ -685,7 +689,10 @@ static void doShooters()
    if (getSwitch(SWITCH_LEFT_SHOOTER)) queueSolenoid(SOLENOID_LEFT_SHOOTER);
    else if (getSwitch(SWITCH_RIGHT_SHOOTER)) queueSolenoid(SOLENOID_RIGHT_SHOOTER);
    else if (getSwitch(SWITCH_EJECT_HOLE)) queueSolenoid(SOLENOID_EJECT_HOLE);
-   else next_shooter = 0;
+   else if (shooter_count++ > 5) {
+        next_shooter = 0;
+        shooter_count = 0;
+   }
 }
 
 
@@ -696,7 +703,10 @@ static void doBallRelease()
       shoot_again_limit = addTime(micros(), LOGIC_SHOOT_AGAIN_TIME);
       queueSolenoid(SOLENOID_BALL_RELEASE);
     }
-   else next_release = 0;
+   else if (release_count++ > 2) {
+        next_release = 0;
+        release_count = 0;
+   }
 }
 
 
