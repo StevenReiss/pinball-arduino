@@ -705,7 +705,7 @@ static void doBallRelease()
       shoot_again_limit = addTime(micros(), LOGIC_SHOOT_AGAIN_TIME);
       queueSolenoid(SOLENOID_BALL_RELEASE);
     }
-   else if (release_count++ > 2) {
+   else if (release_count++ > 1) {
         next_release = 0;
         release_count = 0;
    }
