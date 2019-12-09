@@ -190,6 +190,7 @@ static void removeSpecialSolenoid()
    digitalWrite(SPECIAL_PIN_DRIVER,LOW);
    next_special_off = 0;
    special_switch = NO_SPECIAL;
+   test_switch = -1;
 }
 
 
