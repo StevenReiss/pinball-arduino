@@ -40,7 +40,7 @@ const int SPECIAL_PIN_FLIPPER_ENABLE = SPECIAL_PIN_START2 + 1;
 
 const long SPECIAL_CHECK_TIME = 1000;
 const long SPECIAL_ON_TIME = 15000;
-const long SPECIAL_OFF_TIME = 5000;
+const long SPECIAL_OFF_TIME = 50000;
 
 const int  NUM_SPECIAL = 6;
 
@@ -67,3 +67,4 @@ extern void specialUpdate(unsigned long);
 
 
 /* end of speical.h */
+

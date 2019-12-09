@@ -164,6 +164,7 @@ static void checkSwitch(unsigned long now)
 	      }
 	    special_switch = spec;
 	    if (!special_disable) turnOnSpecialSolenoid(spec,now);
+            else special_switch = NO_SPECIAL;
 	  }
 	 break;
        }
@@ -185,7 +186,7 @@ static void checkOffSwitch()
 
 static void removeSpecialSolenoid()
 {
-//   if (!special_disable) Serial.println("SPECIAL SOLENOID OFF");
+   if (!special_disable && is_testing) Serial.println("SPECIAL SOLENOID OFF");
    digitalWrite(SPECIAL_PIN_DRIVER,LOW);
    next_special_off = 0;
    special_switch = NO_SPECIAL;
@@ -217,3 +218,4 @@ static void turnOnSpecialSolenoid(int spec,unsigned long now)
 
 
 /* end of special.ino */
+
