@@ -23,11 +23,11 @@ static unsigned long	shoot_again_limit;
 static unsigned long	next_laser_reset;
 static unsigned long	next_balls_reset;
 static unsigned long	next_start_turn;
-static unsigned long    next_end_game;
+static unsigned long	next_end_game;
 static unsigned long	next_shooter;
 static unsigned long	next_release;
-static int              shooter_count;
-static int              release_count;
+static int		shooter_count;
+static int		release_count;
 
 static int		gameup_state;
 
@@ -243,7 +243,7 @@ static void handleGamePlayLogic(unsigned long now)
 
 
 void logicReset()
-{ 
+{
 }
 
 
@@ -285,7 +285,7 @@ static void defaultSwitchOn(int sw)
 static void gameOver()
 {
    next_end_game = 0;
-   
+
    disableAllLights();
    removeAllSolenoids();
    specialDisable();
@@ -692,8 +692,8 @@ static void doShooters()
    else if (getSwitch(SWITCH_RIGHT_SHOOTER)) queueSolenoid(SOLENOID_RIGHT_SHOOTER);
    else if (getSwitch(SWITCH_EJECT_HOLE)) queueSolenoid(SOLENOID_EJECT_HOLE);
    else if (shooter_count++ > 5) {
-        next_shooter = 0;
-        shooter_count = 0;
+	next_shooter = 0;
+	shooter_count = 0;
    }
 }
 
@@ -706,8 +706,8 @@ static void doBallRelease()
       queueSolenoid(SOLENOID_BALL_RELEASE);
     }
    else if (release_count++ > 1) {
-        next_release = 0;
-        release_count = 0;
+	next_release = 0;
+	release_count = 0;
    }
 }
 
@@ -717,7 +717,7 @@ static void handleAdvanceBonus()
 {
    incrBonus();
    queueSound(SOUND_DING1);
-   queueSound(SOUND_DING2);	
+   queueSound(SOUND_DING2);
 }
 
 
@@ -962,6 +962,8 @@ static void handleOutHole()
 {
    long now = micros();
 
+   handleSwitchChanges(20, gamePlaySwitchOff, gamePlaySwitchOn);
+
    if (game_data.is_tilt) {
       lightOff(LIGHT_TILT);
       game_data.is_tilt = false;
@@ -1015,7 +1017,7 @@ static void endTurn()
     }
    if (next < 0) {
       next_end_game = addTime(micros(),LOGIC_END_GAME_DELAY);
-//      gameOver();
+//	gameOver();
     }
    else {
       game_data.current_player = next;
@@ -1207,7 +1209,7 @@ static bool addPlayer()
       queueSound(SOUND_BLAST);
       return true;
     }
-    
+
    return false;
 }
 

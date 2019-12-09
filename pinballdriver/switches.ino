@@ -54,13 +54,13 @@ void handleSwitchChanges(int max,SwitchCallback off,SwitchCallback on)
    int ct = 0;
    for (int i = 0; i < NUM_SWITCH; ++i) {
       if (switch_count[i] == SWITCH_BOUNCE_CYCLES) {
+	 switch_count[i] = SWITCH_KNOWN;
 	 if (switch_value[i]) {
 	    (*on)(i);
 	  }
 	 else {
 	    (*off)(i);
 	  }
-	 switch_count[i] = SWITCH_KNOWN;
 	 if (ct++ >= max) break;
        }
     }

@@ -246,18 +246,6 @@ static void updateTask()
        }
     }
 
-   //	Serial.print("CHECK ");
-   //	Serial.print(display_digit_count[0]);
-   //	Serial.print(" ");
-   //	Serial.print(display_value[0]);
-   //	Serial.print(" ");
-   //	Serial.print(bit_values[0][0],BIN);
-   //	Serial.print(" ");
-   //	Serial.print(bit_values[0][1],BIN);
-   //	Serial.print(" ");
-   //	Serial.print(bit_values[0][2],BIN);
-   //	Serial.println();
-
    if (need_digits[DISPLAY_SPLIT]) {
       getSplitDisplayDigits();
       need_digits[DISPLAY_SPLIT] = false;
@@ -333,8 +321,6 @@ static void setTask()
    for (int disp = 0; disp < NUM_DISPLAY; ++disp) {
       int j = disp + 1;
 
-      //      digitalWrite(DISPLAY_DATA_PIN,LOW);
-      //      digitalWrite(DISPLAY_DATA2_PIN,LOW);
       digitalWrite(DISPLAY_LATCH_PIN,LOW);
       writeBit(DISPLAY_CLOCK_MPX0_PIN,j,0);
       writeBit(DISPLAY_CLOCK_MPX1_PIN,j,1);
@@ -343,10 +329,6 @@ static void setTask()
       long val = bit_values[disp][idx];
       long bitv = 0x8000;
       long lowv = 0x80;
-      //      Serial.print("DISP ");
-      //      Serial.print(disp);
-      //      Serial.print(" ");
-      //      Serial.println(val);
       for (int i = 7; i >= 0; --i) {
 	 digitalWrite(DISPLAY_CLOCK_PIN,LOW);
 	 if ((val & bitv) != 0) digitalWrite(DISPLAY_DATA2_PIN,HIGH);
@@ -355,12 +337,8 @@ static void setTask()
 	 if ((val & lowv) != 0) digitalWrite(DISPLAY_DATA_PIN,HIGH);
 	 else digitalWrite(DISPLAY_DATA_PIN,LOW);
 	 lowv >>= 1;
-	 // writeBit(DISPLAY_DATA_PIN,val,i);
-	 // writeBit(DISPLAY_DATA2_PIN,val,i+8);
 	 digitalWrite(DISPLAY_CLOCK_PIN,HIGH);
-	 // digitalWrite(DISPLAY_DATA_PIN,LOW);
        }
-      // digitalWrite(DISPLAY_CLOCK_PIN,LOW);
       digitalWrite(DISPLAY_LATCH_PIN,HIGH);
     }
 
