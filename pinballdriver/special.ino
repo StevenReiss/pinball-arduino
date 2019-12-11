@@ -151,7 +151,8 @@ void specialReset()
 
 static void checkSwitch(unsigned long now)
 {
-   for (int spec = 0; spec < NUM_SPECIAL; ++spec) {
+   for (int i = 0; i < NUM_SPECIAL; ++i) {
+      int spec = (i + 2) % NUM_SPECIAL;
       int sts = digitalRead(SPECIAL_PIN_IN(spec));
       if (spec == test_switch) {
 	 sts = SPECIAL_ON;
@@ -221,4 +222,3 @@ static void turnOnSpecialSolenoid(int spec,unsigned long now)
 
 
 /* end of special.ino */
-
