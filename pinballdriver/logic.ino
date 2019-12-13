@@ -32,6 +32,7 @@ static int		release_count;
 static int		gameup_state;
 
 
+
 /********************************************************************************/
 /*										*/
 /*	Forward definitions							*/
@@ -734,7 +735,7 @@ static void handleStar(int sw)
    queueSound(SOUND_DING1);
    queueSound(SOUND_DING2);
    queueSound(SOUND_DING3);
-   if (game_data.num_stars == 10) {
+   if (game_data.num_stars == NUM_STARS) {
       if (game_data.ae_lamps < 6) {
 	 lightOn(LIGHT_AE_1 + game_data.ae_lamps);
 	 game_data.ae_lamps++;
@@ -834,6 +835,7 @@ static void handleBETarget()
     }
    else if (!isLightEnabled(LIGHT_BULLS_EYE_SPECIAL)) {
       lightOn(LIGHT_BULLS_EYE_SPECIAL);
+      addPoints(40000);
     }
    addPoints(10000);
    incrBonusMult();
@@ -1248,7 +1250,7 @@ static void releaseBall()
 
 static void tilt()
 {
-   game_data.player[game_data.current_player].player_score = 0;
+   // game_data.player[game_data.current_player].player_score = 0;
    updatePlayerInfo();
    checkHighScore();
    ballOutOfPlay();
