@@ -308,6 +308,9 @@ static void gameOver()
    game_data.roll_flags = 0;
    game_data.num_rolls = 0;
 
+   doShooters();
+   shooter_count = 0;
+   
    resetLASERDropTargets();
    resetBALLDropTargets();
    blankScores();
@@ -686,31 +689,6 @@ static void handleShooter(int sw)
 }
 
 
-
-static void doShooters()
-{
-   if (getSwitch(SWITCH_LEFT_SHOOTER)) queueSolenoid(SOLENOID_LEFT_SHOOTER);
-   else if (getSwitch(SWITCH_RIGHT_SHOOTER)) queueSolenoid(SOLENOID_RIGHT_SHOOTER);
-   else if (getSwitch(SWITCH_EJECT_HOLE)) queueSolenoid(SOLENOID_EJECT_HOLE);
-   else if (shooter_count++ > 5) {
-	next_shooter = 0;
-	shooter_count = 0;
-   }
-}
-
-
-
-static void doBallRelease()
-{
-   if (getSwitch(SWITCH_OUTHOLE)) {
-      shoot_again_limit = addTime(micros(), LOGIC_SHOOT_AGAIN_TIME);
-      queueSolenoid(SOLENOID_BALL_RELEASE);
-    }
-   else if (release_count++ > 1) {
-	next_release = 0;
-	release_count = 0;
-   }
-}
 
 
 
@@ -1261,6 +1239,33 @@ static void tilt()
    disableShootAgain();
    specialDisable();
 }
+
+
+
+static void doShooters()
+{
+   if (getSwitch(SWITCH_LEFT_SHOOTER)) queueSolenoid(SOLENOID_LEFT_SHOOTER);
+   else if (getSwitch(SWITCH_RIGHT_SHOOTER)) queueSolenoid(SOLENOID_RIGHT_SHOOTER);
+   else if (getSwitch(SWITCH_EJECT_HOLE)) queueSolenoid(SOLENOID_EJECT_HOLE);
+   else if (shooter_count++ > 5) {
+        next_shooter = 0;
+        shooter_count = 0;
+   }
+}
+
+
+static void doBallRelease()
+{
+   if (getSwitch(SWITCH_OUTHOLE)) {
+      shoot_again_limit = addTime(micros(), LOGIC_SHOOT_AGAIN_TIME);
+      queueSolenoid(SOLENOID_BALL_RELEASE);
+    }
+   else if (release_count++ > 1) {
+        next_release = 0;
+        release_count = 0;
+   }
+}
+
 
 
 
