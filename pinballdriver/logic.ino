@@ -1083,7 +1083,7 @@ static void resetLASERDropTargets()
 static void resetBALLDropTargets()
 {
    queueSolenoid(SOLENOID_BA_DROP_RESET);
-   //	queueSolenoid(SOLENOID_LL_DROP_RESET);		   // these are wired together
+   // queueSolenoid(SOLENOID_LL_DROP_RESET);		   // these are wired together
    next_balls_reset = addTime(micros(), LOGIC_RESET_TIME);
 }
 
