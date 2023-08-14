@@ -92,7 +92,6 @@ void testingSetup()
 
    pinMode(TEST_PIN_MEM_PROTECT,INPUT_PULLUP);
    pinMode(TEST_PIN_AUTO_MANUAL,INPUT_PULLUP);
-   pinMode(TEST_PIN_ADVANCE,INPUT_PULLUP);
    // pinMode(TEST_PIN_BUTTON,INPUT_PULLUP);	// done in main driver
 }
 
@@ -226,13 +225,6 @@ static void checkTestSwitches()
       auto_manual = sts2;
       Serial.print("TEST AUTO_MANUAL ");
       Serial.println(sts2);
-    }
-
-   int sts3 = digitalRead(TEST_PIN_ADVANCE);
-   if (sts3 != advance_btn) {
-      advance_btn = sts3;
-      Serial.print("TEST ADVANCE ");
-      Serial.println(sts3);
     }
 }
 

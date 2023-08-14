@@ -47,8 +47,12 @@ const int	NUM_SOUND_PINS = 1 + 3 + 1;
 const int	LIGHT_PIN_START = 31;
 const int	NUM_LIGHT_PINS = 3 + 1 + 8;
 
-// Pins 23, 25, 27 are used for test switches
-const int	TEST_PIN_START = 23;
+// Pins 23, 25 are spares for fixups
+const int SPARE_1 = 23;         // used for SWITCH OUTPUT 0 (Broken multiplexor)
+const int SPARE_2 = 25;
+
+// Pins 27, 29 are used for test switches
+const int	TEST_PIN_START = 27;
 
 // Pin 29 is not used
 

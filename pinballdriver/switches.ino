@@ -79,6 +79,7 @@ void switchesSetup()
    pinMode(SWITCH_PIN_SELECT0,OUTPUT);
    pinMode(SWITCH_PIN_SELECT1,OUTPUT);
    pinMode(SWITCH_PIN_SELECT2,OUTPUT);
+   pinMode(SWITCH_OUTPUT_0,OUTPUT);
 
    pinMode(SWITCH_PIN_READ0,INPUT_PULLUP);
    pinMode(SWITCH_PIN_READ1,INPUT_PULLUP);
@@ -159,6 +160,16 @@ static void handleSelect()
    writeBit(SWITCH_PIN_SELECT0,switch_col,0);
    writeBit(SWITCH_PIN_SELECT1,switch_col,1);
    writeBit(SWITCH_PIN_SELECT2,switch_col,2);
+<<<<<<< HEAD
+
+   if (switch_col == 0) {
+     digitalWrite(SWITCH_OUTPUT_0,LOW); 
+   }
+   else {
+     digitalWrite(SWITCH_OUTPUT_0,HIGH);
+   }
+=======
+>>>>>>> 50098f59eef4599379d5a7b9798ef58aa838179f
 }
 
 
