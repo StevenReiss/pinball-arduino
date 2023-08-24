@@ -54,9 +54,9 @@ void handleSwitchChanges(int max, SwitchCallback off, SwitchCallback on) {
     if (switch_count[i] == SWITCH_BOUNCE_CYCLES) {
       switch_count[i] = SWITCH_KNOWN;
       if (switch_value[i]) {
-        (*on)(i);
+	(*on)(i);
       } else {
-        (*off)(i);
+	(*off)(i);
       }
       if (ct++ >= max) break;
     }
@@ -89,6 +89,7 @@ void switchesSetup() {
   digitalWrite(SWITCH_PIN_SELECT0, LOW);
   digitalWrite(SWITCH_PIN_SELECT1, LOW);
   digitalWrite(SWITCH_PIN_SELECT2, LOW);
+  digitalWrite(SWITCH_OUTPUT_0, HIGH);
 
   for (int i = 0; i < NUM_SWITCH; ++i) {
     switch_value[i] = false;
@@ -111,6 +112,7 @@ void switchesSetup() {
 void switchesWrap() {
   next_switch_read = 0;
   next_switch_select = 0;
+  switch_col = 0;
 }
 
 
@@ -140,7 +142,7 @@ void switchesReset() {
 
 
 /********************************************************************************/
-/*										  */
+/*										*/
 /*	Switch action methods							*/
 /*										*/
 /********************************************************************************/
@@ -171,7 +173,7 @@ static void handleRead() {
     if (swno < 0 || swno >= NUM_SWITCH) continue;
     if (switch_value[swno] == val) {
       if (switch_count[swno] != SWITCH_KNOWN)
-        if (switch_count[swno] < SWITCH_BOUNCE_CYCLES) ++switch_count[swno];
+	if (switch_count[swno] < SWITCH_BOUNCE_CYCLES) ++switch_count[swno];
     } else {
       //	   Serial.print("SWITCH CHANGE ");
       //	   Serial.print(cbase);
