@@ -153,11 +153,10 @@ static void handleSelect() {
   writeBit(SWITCH_PIN_SELECT0, switch_col, 0);
   writeBit(SWITCH_PIN_SELECT1, switch_col, 1);
   writeBit(SWITCH_PIN_SELECT2, switch_col, 2);
+  digitalWrite(SWITCH_OUTPUT_0,HIGH);
 
   if (switch_col == 7) {
     digitalWrite(SWITCH_OUTPUT_0, LOW);
-  } else {
-    digitalWrite(SWITCH_OUTPUT_0, HIGH);
   }
 }
 
